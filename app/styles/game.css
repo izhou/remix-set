@@ -17,6 +17,15 @@
   align-content: center;
   grid-gap: 3px;
 
-.symbol {
-  /* padding: 1rem; */
+}
+.symbol--green {
+  color: #755B7B;
+}
+
+.symbol--red {
+  color: #cd5c5c;
+}
+
+.symbol--blue {
+  color: #64a18d
 }

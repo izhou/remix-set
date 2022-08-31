@@ -32,7 +32,6 @@ export default class Game extends React.Component<{}, gameState> {
   }
 
   handleClick(i:number) {
-    // if (currentCards[i])
     return;
   }
 

@@ -9,14 +9,9 @@ const svgMap: Record<CardShapes, string> = {
 }
 
 export default function Card(props: CardData) {
-  let color =
-    props.color == CardColors.Red ? `#cd5c5c`
-      : props.color == CardColors.Blue ? "#64a18d"
-        : "#755B7B";
-
   const symbols = Array.from(Array(props.number), (_, i) =>
-    <div className="symbol" key={i}>
-      <svg color={color} viewBox="0 0 200 100">
+    <div className={"symbol symbol--" + props.color} key={i}>
+      <svg color="currentColor" viewBox="0 0 200 100">
         {/* Shape fill */}
         <path
           d={svgMap[props.shape]}
