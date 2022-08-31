@@ -7,10 +7,9 @@ export const links: LinksFunction = () => {
 }
 
 export default function SetRoute() {
-
   return (
     <div> 
-      <h1>Set Game</h1>
+      <h1>Set: Zen Mode</h1>
       <Game />
     </div>
   );

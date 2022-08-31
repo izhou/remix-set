@@ -17,7 +17,9 @@ export default function IndexRoute() {
         <nav>
           <ul>
             <li>
-              <Link to="game">Play Set</Link>
+              <Link to="game">Instructions</Link>
+              <Link to="game">Zen Mode</Link>
+              <Link to="game">Daily</Link>
             </li>
           </ul>
         </nav>

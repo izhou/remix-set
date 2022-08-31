@@ -32,7 +32,7 @@ export default class Game extends React.Component<{}, gameState> {
         deck: shuffled,
         currentCards
       };
-    })
+    });
   }
 
   checkEndGame() {
@@ -48,12 +48,12 @@ export default class Game extends React.Component<{}, gameState> {
   handleInvalidSet() {
     return this.setState({
       activeCardsIndex: [],
-      message: <div>'Sorry, this is not a set'</div>
+      message: <div>Sorry, that is not a set</div>
     }, () => {
       const timer = setTimeout(() => {
         this.setState({ message: <></> });
         clearTimeout(timer);
-      }, 1000);
+      }, 2000);
     });
   }
 
