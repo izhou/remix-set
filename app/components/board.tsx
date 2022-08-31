@@ -3,7 +3,7 @@ import Card from "./card";
 import type { CardData } from "./types.d";
 
 type boardProps = {
-  cards: Array<CardData>,
+  cards: Array<CardData|null>,
   activeCardsIndex: Array<number>
   onClick: Function
 };
@@ -29,7 +29,8 @@ export default class Board extends React.Component<boardProps> {
   render() {
     return (
       <div className="board">
-        <svg height="0px">
+        {/* Generates SVG definitions needed to create stripey symbols */}
+        <svg className="svg-defs">
           <defs>
             <pattern id="pattern-stripe"
               width="6" height="1"
@@ -44,7 +45,9 @@ export default class Board extends React.Component<boardProps> {
         </svg>
 
         <div className="cards">
-          {this.props.cards.map((card, index) => this.renderCard(card, index))}
+          {this.props.cards.map((card, index) => 
+            card ? this.renderCard(card, index): <div className="no-card" key={index}></div>
+          )}
         </div>
       </div>
     )

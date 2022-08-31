@@ -37,7 +37,7 @@ export default function Card(props: cardProps) {
 
   return (
     <button 
-      className={`card-container ${props.isActive ? "card--active" : ""}`}
+      className={`card-container ${props.isActive ? "card-container--active" : ""}`}
       onClick={() => {props.onClick()}}
     >
       <div className="card" card-data={JSON.stringify(props)}>

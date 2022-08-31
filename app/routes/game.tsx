@@ -2,7 +2,6 @@ import Game from "~/components/game"
 import { Link } from "@remix-run/react";
 
 import stylesUrl from "~/styles/game.css";
-
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
 }

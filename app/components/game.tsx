@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Board from "./board";
 import { CardNumbers, CardShapes, CardFills, CardColors, CardData } from "./types.d";
 
 interface gameState {
-  currentCards: Array<CardData>,
+  currentCards: Array<CardData|null>,
   deck: Array<CardData>,
   activeCardsIndex: Array<number>
+  message: JSX.Element,
+  isEnded: boolean,
 }
 
 export default class Game extends React.Component<{}, gameState> {
@@ -16,59 +18,87 @@ export default class Game extends React.Component<{}, gameState> {
       currentCards: [],
       deck: createDeck(),
       activeCardsIndex: [],
+      message:<></>,
+      isEnded: false
     };
   }
 
   componentDidMount() {
     this.setState((state) => {
       let shuffled = shuffleDeck(state.deck);
-      let current = shuffled.splice(0,12);
+      let currentCards = shuffled.splice(0,12);
 
       return {
         deck: shuffled,
-        currentCards: current
+        currentCards
       };
     })
   }
 
-  componentDidUpdate() {
-    console.log(this.state);
+  checkEndGame() {
+    let sets = findSets(this.state.currentCards);
+    if (sets.length == 0) {
+      this.setState({
+        isEnded: true,
+        message: <div>Congratulations, there are no more sets!</div>
+      })
+    }
   }
 
-  handleClick(index:number) {
+  handleInvalidSet() {
+    return this.setState({
+      activeCardsIndex: [],
+      message: <div>'Sorry, this is not a set'</div>
+    }, () => {
+      const timer = setTimeout(() => {
+        this.setState({ message: <></> });
+        clearTimeout(timer);
+      }, 1000);
+    });
+  }
+
+  handleValidSet(activeCardsIndex: Array<number>) {
+    let deck = this.state.deck;
+    let currentCards = this.state.currentCards;
+
+    activeCardsIndex.forEach((index) => {
+
+      let card = currentCards.length > 12 ? currentCards.pop() : deck.pop();
+      currentCards[index] = card || null;
+    });
+
+    this.setState({
+      currentCards,
+      deck,
+      activeCardsIndex: []
+    });
+  }
+
+
+  handleClick(index: number) {
+    if (this.state.isEnded) return;
+
     let activeCardsIndex = this.state.activeCardsIndex;
-    let updatedActiveCardsIndex = activeCardsIndex.includes(index) 
+
+    // Toggle active card on or off.
+    activeCardsIndex = activeCardsIndex.includes(index)
       ? activeCardsIndex.filter((i) => i !== index)
       : activeCardsIndex.concat([index]);
 
-    if (updatedActiveCardsIndex.length == 3) {
-      let cards = updatedActiveCardsIndex.map((index) => this.state.currentCards[index]);
+    // Detect current active cards
+    let activeCards: Array<CardData> = [];
+    activeCardsIndex.forEach((index) => {
+      let card = this.state.currentCards[index];
+      if (card !== null) activeCards.push(card);
+    });
 
-      let winner = checkIfSet(cards[0],cards[1],cards[2]);
+    // There are not three active cards yet, set active card state and continue.
+    if (activeCards.length !== 3) return this.setState({activeCardsIndex});
 
-      if (winner) {
-        let deck = this.state.deck;
-        let currentCards = this.state.currentCards;
-        updatedActiveCardsIndex.forEach((index) => {
-          let card = deck.pop();
-          if (card) currentCards[index] = card;       
-        });
+    // There are three cards that are not a set, 
+    if (!validateSet(activeCards)) return this.handleInvalidSet();
 
-        this.setState({
-          currentCards,
-          deck,
-          activeCardsIndex: []
-        });  
-      } else {
-        this.setState({
-          activeCardsIndex:[]
-        });
-      }
-    } else {
-      this.setState({
-        activeCardsIndex: updatedActiveCardsIndex
-      })
-    }
+    return this.handleValidSet(activeCardsIndex);
   }
 
   render() {
@@ -79,8 +109,7 @@ export default class Game extends React.Component<{}, gameState> {
           activeCardsIndex={this.state.activeCardsIndex}
           onClick={(i:number) =>{this.handleClick(i)}}
         />
-        <div className="test">
-        </div>
+        <div className="message">{this.state.message}</div>
       </div>
     );
   }
@@ -118,9 +147,33 @@ function shuffleDeck(deck: Array<CardData>): Array<CardData> {
   return deck;
 }
 
-function checkIfSet(card1: CardData, card2: CardData, card3: CardData): boolean {
-  return (card1.number == card2.number) == (card1.number == card3.number)
-    && (card1.shape == card2.shape) == (card1.shape == card3.shape)
-    && (card1.fill == card2.fill) == (card1.fill == card3.fill)
-    && (card1.color == card2.color) == (card1.color == card3.color);
+function validateSet(cards: Array<CardData>): boolean {
+  return cards.length == 3 
+    && (cards[0].number == cards[1].number) == (cards[0].number == cards[2].number)
+    && (cards[0].shape == cards[1].shape) == (cards[0].shape == cards[2].shape)
+    && (cards[0].fill == cards[1].fill) == (cards[0].fill == cards[2].fill)
+    && (cards[0].color == cards[1].color) == (cards[0].color == cards[2].color);
+}
+
+function findSets(cards: Array<CardData|null>): Array<Array<CardData>> {
+  let sets: Array<Array<CardData>> = [];
+  let filteredCards:Array<CardData> = [];
+
+  cards.forEach((card) => {
+    if (card !== null) filteredCards.push(card);
+  });
+
+  if (filteredCards.length < 3) return sets;
+
+  for (let i = 0; i < filteredCards.length - 2; i++) {
+    for (let j = i + 1; j < filteredCards.length - 1; j++) {
+      for (let k = j + 1; k < filteredCards.length; k++) {
+        if (validateSet([filteredCards[i],filteredCards[j],filteredCards[k]])) {
+          sets.push([filteredCards[i], filteredCards[j], filteredCards[k]]);
+        }
+      }
+    }
+  }
+
+  return sets;
 }

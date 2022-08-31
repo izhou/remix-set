@@ -1,13 +1,39 @@
+.board {
+  background-color: lightgray;
+  padding: 2rem;
+  width:fit-content;
+  border-radius:1rem;
+}
+
+.svg-defs {
+  position: absolute;
+  height: 0px;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(4, minmax(80px, 120px));
-  grid-gap: 0.5rem;
+  grid-gap: 12px;
 }
+
 .card-container {
   border-radius: 16px;
   padding: 18px;
   display: block;
-  aspect-ratio: 2.5/3.5
+  aspect-ratio: 2.5/3.5;
+  background: white;
+  border: 2px solid rgb(200, 200, 200);
+  transition: all 0.2s;
+}
+
+.card-container--active {
+  transform: scale(1.05);
+  background-color: #fffaf5;
+  border-color: #d7b88f;
+}
+
+.no-card {
+  aspect-ratio: 2.5/3.5;
 }
 
 .card {
@@ -28,8 +54,4 @@
 
 .symbol--blue {
   color: #64a18d
-}
-
-.card--active {
-  background-color:pink;
 }
