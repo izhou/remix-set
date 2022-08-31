@@ -1,8 +1,16 @@
-.board {
+/* .board {
   background-color: lightgray;
   padding: 2rem;
   width:fit-content;
   border-radius:1rem;
+} */
+
+.board {
+  background-color: lightgray;
+  padding: 2rem;
+  border-radius: 1rem;
+  position: relative;
+  min-width: fit-content;
 }
 
 .svg-defs {
@@ -10,13 +18,25 @@
   height: 0px;
 }
 
-.cards {
+/* .cards {
   display: grid;
   grid-template-columns: repeat(4, minmax(80px, 120px));
   grid-gap: 12px;
+} */
+
+.cards {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+
+  grid-gap: 12px;
+  grid-auto-flow: column;
+  max-width: fit-content;
+  margin: auto
 }
 
 .card-container {
+  min-width:80px;
+  width: 120px;
   border-radius: 16px;
   padding: 18px;
   display: block;

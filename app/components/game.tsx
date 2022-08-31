@@ -63,7 +63,7 @@ export default class Game extends React.Component<{}, gameState> {
 
     activeCardsIndex.forEach((index) => {
 
-      let card = currentCards.length > 12 ? currentCards.pop() : deck.pop();
+    let card = currentCards.length > 12 ? currentCards.pop() : deck.pop();
       currentCards[index] = card || null;
     });
 
@@ -71,9 +71,21 @@ export default class Game extends React.Component<{}, gameState> {
       currentCards,
       deck,
       activeCardsIndex: []
-    });
+    }, this.maybeEndGame);
   }
 
+  maybeEndGame() {
+    // Deck still exists, not in end game
+    if (this.state.deck.length) return;
+
+    let sets = findSets(this.state.currentCards);
+    if (sets.length) return;
+
+    // No more sets! Game has ended.
+    this.setState({
+      isEnded: true
+    });
+  }
 
   handleClick(index: number) {
     if (this.state.isEnded) return;
@@ -95,7 +107,7 @@ export default class Game extends React.Component<{}, gameState> {
     // There are not three active cards yet, set active card state and continue.
     if (activeCards.length !== 3) return this.setState({activeCardsIndex});
 
-    // There are three cards that are not a set, 
+    // There are three cards that are not a set 
     if (!validateSet(activeCards)) return this.handleInvalidSet();
 
     return this.handleValidSet(activeCardsIndex);
