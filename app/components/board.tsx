@@ -3,7 +3,8 @@ import Card from "./card";
 import type { CardData } from "./types.d";
 
 type boardProps = {
-  cards: Array<CardData>
+  cards: Array<CardData>,
+  activeCardsIndex: Array<number>
   onClick: Function
 };
 
@@ -13,13 +14,14 @@ export default class Board extends React.Component<boardProps> {
   }
 
   renderCard(card: CardData, index: number) {
+    let isActive = this.props.activeCardsIndex.includes(index);
+
     return (
       <Card
-        number={card.number}
-        shape={card.shape}
-        fill={card.fill}
-        color={card.color}
+        data={card}
         key={index}
+        onClick={() => this.props.onClick(index)}
+        isActive={isActive}
         />
     )
   }

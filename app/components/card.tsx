@@ -1,6 +1,6 @@
 import React from "react";
 import { CardData, CardFills } from "./types.d";
-import {CardShapes, CardColors} from "./types.d";
+import {CardShapes} from "./types.d";
 
 const svgMap: Record<CardShapes, string> = {
   [CardShapes.Squiggle]: "m31 16c69-48 69 48 137 0 39-24 39 38 0 67-69 48-69-48-137 0-39 24-39-38 0-67",
@@ -8,19 +8,25 @@ const svgMap: Record<CardShapes, string> = {
   [CardShapes.Diamond]: "m2 50 98-48 98 48-98 48z"
 }
 
-export default function Card(props: CardData) {
-  const symbols = Array.from(Array(props.number), (_, i) =>
-    <div className={"symbol symbol--" + props.color} key={i}>
+type cardProps = {
+  data: CardData,
+  onClick: Function,
+  isActive: boolean
+};
+
+export default function Card(props: cardProps) {
+  const symbols = Array.from(Array(props.data.number), (_, i) =>
+    <div className={"symbol symbol--" + props.data.color} key={i}>
       <svg color="currentColor" viewBox="0 0 200 100">
         {/* Shape fill */}
         <path
-          d={svgMap[props.shape]}
-          fill={props.fill == CardFills.Empty ? "none" : "currentcolor"}
-          mask={props.fill == CardFills.Striped ? "url(#mask-stripe)" : "none"}
+          d={svgMap[props.data.shape]}
+          fill={props.data.fill == CardFills.Empty ? "none" : "currentcolor"}
+          mask={props.data.fill == CardFills.Striped ? "url(#mask-stripe)" : "none"}
         ></path>
         {/* Shape outline */}
         <path
-          d={svgMap[props.shape]}
+          d={svgMap[props.data.shape]}
           fill="none"
           strokeWidth="4px"
           stroke="currentcolor"
@@ -30,7 +36,10 @@ export default function Card(props: CardData) {
   )
 
   return (
-    <button className="card-container" onClick={props.onClick}>
+    <button 
+      className={`card-container ${props.isActive ? "card--active" : ""}`}
+      onClick={() => {props.onClick()}}
+    >
       <div className="card" card-data={JSON.stringify(props)}>
         {symbols}
       </div>

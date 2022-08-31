@@ -31,16 +31,54 @@ export default class Game extends React.Component<{}, gameState> {
     })
   }
 
-  handleClick(i:number) {
-    return;
+  componentDidUpdate() {
+    console.log(this.state);
+  }
+
+  handleClick(index:number) {
+    let activeCardsIndex = this.state.activeCardsIndex;
+    let updatedActiveCardsIndex = activeCardsIndex.includes(index) 
+      ? activeCardsIndex.filter((i) => i !== index)
+      : activeCardsIndex.concat([index]);
+
+    if (updatedActiveCardsIndex.length == 3) {
+      let cards = updatedActiveCardsIndex.map((index) => this.state.currentCards[index]);
+
+      let winner = checkIfSet(cards[0],cards[1],cards[2]);
+
+      if (winner) {
+        let deck = this.state.deck;
+        let currentCards = this.state.currentCards;
+        updatedActiveCardsIndex.forEach((index) => {
+          let card = deck.pop();
+          if (card) currentCards[index] = card;       
+        });
+
+        this.setState({
+          currentCards,
+          deck,
+          activeCardsIndex: []
+        });  
+      } else {
+        this.setState({
+          activeCardsIndex:[]
+        });
+      }
+    } else {
+      this.setState({
+        activeCardsIndex: updatedActiveCardsIndex
+      })
+    }
   }
 
   render() {
-    const current = this.state.currentCards;
-
     return (
       <div className="set-game">
-        <Board cards={current} onClick={(i:number) =>{this.handleClick(i)}}/>
+        <Board 
+          cards={this.state.currentCards}
+          activeCardsIndex={this.state.activeCardsIndex}
+          onClick={(i:number) =>{this.handleClick(i)}}
+        />
         <div className="test">
         </div>
       </div>

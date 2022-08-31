@@ -29,3 +29,7 @@
 .symbol--blue {
   color: #64a18d
 }
+
+.card--active {
+  background-color:pink;
+}
