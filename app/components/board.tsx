@@ -1,9 +1,10 @@
 import React from "react";
 import Card from "./card";
-import type { CardInterface } from "./card";
+import type { CardData } from "./types.d";
 
 type boardProps = {
-  cards: Array<CardInterface>
+  cards: Array<CardData>
+  onClick: Function
 };
 
 export default class Board extends React.Component<boardProps> {
@@ -11,9 +12,15 @@ export default class Board extends React.Component<boardProps> {
     super(props);
   }
 
-  renderCard(card: CardInterface, boardIndex: number) {
+  renderCard(card: CardData, index: number) {
     return (
-      <Card active={false} number={card.number} shape={card.shape} fill={card.fill} color={card.color} key={boardIndex} />
+      <Card
+        number={card.number}
+        shape={card.shape}
+        fill={card.fill}
+        color={card.color}
+        key={index}
+        />
     )
   }
 
@@ -35,7 +42,7 @@ export default class Board extends React.Component<boardProps> {
         </svg>
 
         <div className="cards">
-          {this.props.cards.map((card, i) => this.renderCard(card, i))}
+          {this.props.cards.map((card, index) => this.renderCard(card, index))}
         </div>
       </div>
     )

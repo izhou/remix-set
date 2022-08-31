@@ -1,28 +1,17 @@
 import React from "react";
+import { CardData, CardFills } from "./types.d";
+import {CardShapes, CardColors} from "./types.d";
 
-const numbers = [1, 2, 3];
-const shapes = ["squiggle", "oval", "diamond"];
-const fills = ["solid", "empty", "striped"];
-const colors = ["r", "g", "b"];
-
-export interface CardInterface {
-  active?: boolean,
-  number: typeof numbers[number];
-  shape: typeof shapes[number];
-  fill: typeof fills[number];
-  color: typeof colors[number];
+const svgMap: Record<CardShapes, string> = {
+  [CardShapes.Squiggle]: "m31 16c69-48 69 48 137 0 39-24 39 38 0 67-69 48-69-48-137 0-39 24-39-38 0-67",
+  [CardShapes.Oval]: "m51 2a.98.96 0 000 96h98a.98.96 0 000-96H51",
+  [CardShapes.Diamond]: "m2 50 98-48 98 48-98 48z"
 }
 
-const svgMap: Record<typeof shapes[number], string> = {
-  "squiggle": "m31 16c69-48 69 48 137 0 39-24 39 38 0 67-69 48-69-48-137 0-39 24-39-38 0-67",
-  "oval": "m51 2a.98.96 0 000 96h98a.98.96 0 000-96H51",
-  "diamond": "m2 50 98-48 98 48-98 48z"
-}
-
-export default function Card(props: CardInterface) {
+export default function Card(props: CardData) {
   let color =
-    props.color == "r" ? `#cd5c5c`
-      : props.color == "g" ? "#64a18d"
+    props.color == CardColors.Red ? `#cd5c5c`
+      : props.color == CardColors.Blue ? "#64a18d"
         : "#755B7B";
 
   const symbols = Array.from(Array(props.number), (_, i) =>
@@ -31,8 +20,8 @@ export default function Card(props: CardInterface) {
         {/* Shape fill */}
         <path
           d={svgMap[props.shape]}
-          fill={props.fill == "empty" ? "none" : "currentcolor"}
-          mask={props.fill == "striped" ? "url(#mask-stripe)" : "none"}
+          fill={props.fill == CardFills.Empty ? "none" : "currentcolor"}
+          mask={props.fill == CardFills.Striped ? "url(#mask-stripe)" : "none"}
         ></path>
         {/* Shape outline */}
         <path
@@ -46,25 +35,10 @@ export default function Card(props: CardInterface) {
   )
 
   return (
-    <button className="card-container">
-      <div className="card">
+    <button className="card-container" onClick={props.onClick}>
+      <div className="card" card-data={JSON.stringify(props)}>
         {symbols}
       </div>
     </button>
   )
-}
-
-// Creates an array of all possible cards
-export function createDeck(): Array<CardInterface> {
-  let deck: Array<CardInterface> = [];
-  numbers.forEach(number =>
-    shapes.forEach(shape =>
-      fills.forEach(fill =>
-        colors.forEach(color =>
-          deck.push({
-            number, shape, fill, color
-          })
-        ))));
-
-  return deck;
 }
