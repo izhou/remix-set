@@ -1,22 +1,20 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Board from "./board";
-import { CardNumbers, CardShapes, CardFills, CardColors, CardData } from "./types.d";
+import Table from "./table";
+import { CardNumbers, CardShapes, CardFills, CardColors, CardData, GameState } from "./types.d";
 
-interface gameState {
-  currentCards: Array<CardData|null>,
-  deck: Array<CardData>,
-  activeCardsIndex: Array<number>
-  message: JSX.Element,
-  isEnded: boolean,
+type GameProps = {
+  title: string
 }
 
-export default class Game extends React.Component<{}, gameState> {
-  constructor(props:any) {
+export default class Game extends React.Component<GameProps, GameState> {
+  constructor(props:GameProps) {
     super(props);
 
     this.state = {
       currentCards: [],
       deck: createDeck(),
+      history: [],
       activeCardsIndex: [],
       message:<></>,
       isEnded: false
@@ -26,7 +24,7 @@ export default class Game extends React.Component<{}, gameState> {
   componentDidMount() {
     this.setState((state) => {
       let shuffled = shuffleDeck(state.deck);
-      let currentCards = shuffled.splice(0,12);
+      let currentCards = shuffled.splice(0,15);
 
       return {
         deck: shuffled,
@@ -57,19 +55,22 @@ export default class Game extends React.Component<{}, gameState> {
     });
   }
 
-  handleValidSet(activeCardsIndex: Array<number>) {
+  handleValidSet(activeCards: Array<CardData>, activeCardsIndex: Array<number>) {
     let deck = this.state.deck;
     let currentCards = this.state.currentCards;
+    let history = this.state.history;
+
+    history.push(activeCards);
 
     activeCardsIndex.forEach((index) => {
-
-    let card = currentCards.length > 12 ? currentCards.pop() : deck.pop();
+      let card = currentCards.length > 12 ? currentCards.pop() : deck.pop();
       currentCards[index] = card || null;
     });
 
     this.setState({
       currentCards,
       deck,
+      history,
       activeCardsIndex: []
     }, this.maybeEndGame);
   }
@@ -110,18 +111,20 @@ export default class Game extends React.Component<{}, gameState> {
     // There are three cards that are not a set 
     if (!validateSet(activeCards)) return this.handleInvalidSet();
 
-    return this.handleValidSet(activeCardsIndex);
+    return this.handleValidSet(activeCards, activeCardsIndex);
   }
 
   render() {
     return (
       <div className="set-game">
+        {/* <h1>{this.props.title}</h1> */}
         <Board 
           cards={this.state.currentCards}
           activeCardsIndex={this.state.activeCardsIndex}
           onClick={(i:number) =>{this.handleClick(i)}}
         />
         <div className="message">{this.state.message}</div>
+        <Table sets={this.state.history} title="Found Sets"/>
       </div>
     );
   }

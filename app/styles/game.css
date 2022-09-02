@@ -1,16 +1,30 @@
-/* .board {
+body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  flex-direction:column;
   background-color: lightgray;
-  padding: 2rem;
-  width:fit-content;
-  border-radius:1rem;
-} */
+}
+
+.set-game {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
 
 .board {
   background-color: lightgray;
-  padding: 2rem;
-  border-radius: 1rem;
-  position: relative;
-  min-width: fit-content;
+  border-radius: 0.5rem;
+  flex: 1 0 360px;
+  height: 100%;
+  max-width: calc(75vh - 2rem);
+  min-width: 260px;
 }
 
 .svg-defs {
@@ -18,36 +32,25 @@
   height: 0px;
 }
 
-/* .cards {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(80px, 120px));
-  grid-gap: 12px;
-} */
-
 .cards {
   display: grid;
-  grid-template-rows: repeat(3, 1fr);
-
-  grid-gap: 12px;
+  grid-template-rows: repeat(3, auto);
   grid-auto-flow: column;
-  max-width: fit-content;
-  margin: auto
+  height: 100%;
+  align-content: start;
+  grid-gap: 6px;
 }
 
 .card-container {
-  min-width:80px;
-  width: 120px;
-  border-radius: 16px;
-  padding: 18px;
-  display: block;
   aspect-ratio: 2.5/3.5;
   background: white;
   border: 2px solid rgb(200, 200, 200);
+  border-radius: 4px;
   transition: all 0.2s;
 }
 
 .card-container--active {
-  transform: scale(1.05);
+  transform: scale(1.03);
   background-color: #fffaf5;
   border-color: #d7b88f;
 }
@@ -57,13 +60,18 @@
 }
 
 .card {
-  display: grid;
   height: 100%;
   width: 100%;
+  display: grid;
   align-content: center;
-  grid-gap: 3px;
-
+  grid-gap: 4px
 }
+
+.symbol {
+  width: 80%;
+  margin: auto;
+}
+
 .symbol--green {
   color: #755B7B;
 }
@@ -74,4 +82,19 @@
 
 .symbol--blue {
   color: #64a18d
+}
+
+.set-table {
+  height: 100%;
+  max-width: 40px;
+  margin-left: auto;
+  overflow: scroll;
+  min-width: fit-content;
+}
+
+.set-table--row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  opacity: 0.7;
 }

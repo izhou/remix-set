@@ -8,9 +8,9 @@ export const links: LinksFunction = () => {
 
 export default function SetRoute() {
   return (
-    <div> 
+    <> 
       <h1>Set: Zen Mode</h1>
-      <Game />
-    </div>
+      <Game title="Set: Zen Mode"/>
+    </>
   );
 }

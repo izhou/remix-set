@@ -1,3 +1,12 @@
+export interface GameState {
+  currentCards: Array<CardData | null>,
+  deck: Array<CardData>,
+  activeCardsIndex: Array<number>
+  message: JSX.Element,
+  isEnded: boolean,
+  history: Array<Array<CardData>>
+}
+
 export enum CardNumbers {
   One=1,
   Two,

@@ -10,8 +10,8 @@ const svgMap: Record<CardShapes, string> = {
 
 type cardProps = {
   data: CardData,
-  onClick: Function,
-  isActive: boolean
+  onClick?: Function,
+  isActive?: boolean
 };
 
 export default function Card(props: cardProps) {
@@ -38,7 +38,7 @@ export default function Card(props: cardProps) {
   return (
     <button 
       className={`card-container ${props.isActive ? "card-container--active" : ""}`}
-      onClick={() => {props.onClick()}}
+      onClick={() => {props.onClick && props.onClick()}}
     >
       <div className="card" card-data={JSON.stringify(props)}>
         {symbols}
