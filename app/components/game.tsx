@@ -13,17 +13,16 @@ export default class Game extends React.Component<GameProps, GameState> {
 
     this.state = {
       currentCards: [],
-      deck: createDeck(),
+      deck: createCompleteDeck(),
       history: [],
       activeCardsIndex: [],
-      message:<></>,
       isEnded: false
     };
   }
 
   componentDidMount() {
     this.setState((state) => {
-      let shuffled = shuffleDeck(state.deck);
+      let shuffled = shuffleCards(state.deck);
       let currentCards = shuffled.splice(0,12);
 
       return {
@@ -33,25 +32,23 @@ export default class Game extends React.Component<GameProps, GameState> {
     });
   }
 
-  checkEndGame() {
-    let sets = findSets(this.state.currentCards);
-    if (sets.length == 0) {
-      this.setState({
-        isEnded: true,
-        message: <div>Congratulations, there are no more sets!</div>
-      })
+
+  componentDidUpdate() {
+    // Clear error message after 10seconds
+    if (this.state.errorMessage) {
+      let errorMessageTimeout = setTimeout(() => {
+        this.setState(() => {
+          clearTimeout(errorMessageTimeout);
+          return {errorMessage: undefined};
+        });
+      }, 1000)
     }
   }
 
   handleInvalidSet() {
     return this.setState({
       activeCardsIndex: [],
-      message: <div>Sorry, that is not a set</div>
-    }, () => {
-      const timer = setTimeout(() => {
-        this.setState({ message: <></> });
-        clearTimeout(timer);
-      }, 2000);
+      errorMessage: `Sorry, this isn't a valid set.`,
     });
   }
 
@@ -123,14 +120,14 @@ export default class Game extends React.Component<GameProps, GameState> {
           activeCardsIndex={this.state.activeCardsIndex}
           onClick={(i:number) =>{this.handleClick(i)}}
         />
-        <div className="message">{this.state.message}</div>
+        {this.state.errorMessage && <div className="error-message">{this.state.errorMessage}</div>}
         <Table sets={this.state.history} title="Found Sets"/>
       </div>
     );
   }
 }
 
-function createDeck(): Array<CardData> {
+export function createCompleteDeck(): Array<CardData> {
   let deck: Array<CardData> = [];
   for (let number in CardNumbers) {
     if (!isNaN(parseInt(number))) continue;
@@ -151,18 +148,18 @@ function createDeck(): Array<CardData> {
   return deck;
 }
 
-function shuffleDeck(deck: Array<CardData>): Array<CardData> {
-  for (let i = deck.length - 1; i > 0; i--) {
+export function shuffleCards(cards: Array<CardData>): Array<CardData> {
+  for (let i = cards.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * i);
-    let temp = deck[i];
-    deck[i] = deck[j];
-    deck[j] = temp;
+    let temp = cards[i];
+    cards[i] = cards[j];
+    cards[j] = temp;
   }
 
-  return deck;
+  return cards;
 }
 
-function validateSet(cards: Array<CardData>): boolean {
+export function validateSet(cards: Array<CardData>): boolean {
   return cards.length == 3 
     && (cards[0].number == cards[1].number) == (cards[0].number == cards[2].number)
     && (cards[0].shape == cards[1].shape) == (cards[0].shape == cards[2].shape)
@@ -170,7 +167,7 @@ function validateSet(cards: Array<CardData>): boolean {
     && (cards[0].color == cards[1].color) == (cards[0].color == cards[2].color);
 }
 
-function findSets(cards: Array<CardData|null>): Array<Array<CardData>> {
+export function findSets(cards: Array<CardData|null>, params: {numSets?:number, unique?: boolean} = {}): Array<Array<CardData>> {
   let sets: Array<Array<CardData>> = [];
   let filteredCards:Array<CardData> = [];
 
@@ -180,11 +177,24 @@ function findSets(cards: Array<CardData|null>): Array<Array<CardData>> {
 
   if (filteredCards.length < 3) return sets;
 
-  for (let i = 0; i < filteredCards.length - 2; i++) {
+  parentLoop: for (let i = 0; i < filteredCards.length - 2; i++) {
     for (let j = i + 1; j < filteredCards.length - 1; j++) {
       for (let k = j + 1; k < filteredCards.length; k++) {
+        // Set is found
         if (validateSet([filteredCards[i],filteredCards[j],filteredCards[k]])) {
           sets.push([filteredCards[i], filteredCards[j], filteredCards[k]]);
+
+          // Return if we have desired number of sets
+          if (params.numSets && sets.length == params.numSets) return sets;
+
+          // If we only want unique sets, do not reuse cards at i, j, or k
+          if (params.unique) {
+            i = k + 1;
+            continue parentLoop;
+          }
+
+          // Because there is only one distint soln to 2 cards
+          continue;
         }
       }
     }

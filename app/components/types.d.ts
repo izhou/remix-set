@@ -2,9 +2,9 @@ export interface GameState {
   currentCards: Array<CardData | null>,
   deck: Array<CardData>,
   activeCardsIndex: Array<number>
-  message: JSX.Element,
   isEnded: boolean,
-  history: Array<Array<CardData>>
+  history: Array<Array<CardData>>,
+  errorMessage?: string,
 }
 
 export enum CardNumbers {

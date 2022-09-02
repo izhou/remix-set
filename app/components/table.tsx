@@ -3,7 +3,7 @@ import Card from "./card";
 import { CardData } from "./types.d";
 
 type TableProps = {
-  sets: Array<Array<CardData>>
+  sets: Array<Array<CardData | null>>
   title: string
 };
 
@@ -14,7 +14,7 @@ export default function Table(props: TableProps) {
 
       {props.sets.map((set) =>
         <div className="table--row">
-          {set.map((card) => <Card data={card} />)}
+          {set.map((card) => card && <Card data={card} />)}
         </div>
       )}
     </div>
