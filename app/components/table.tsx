@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "./card";
+import { CardData } from "./types.d";
 
 type TableProps = {
   sets: Array<Array<CardData>>

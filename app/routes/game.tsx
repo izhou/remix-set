@@ -1,5 +1,5 @@
 import Game from "~/components/game" 
-import { Link } from "@remix-run/react";
+import { LinksFunction } from "@remix-run/node";
 
 import stylesUrl from "~/styles/game.css";
 export const links: LinksFunction = () => {

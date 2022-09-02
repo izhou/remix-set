@@ -24,7 +24,7 @@ export default class Game extends React.Component<GameProps, GameState> {
   componentDidMount() {
     this.setState((state) => {
       let shuffled = shuffleDeck(state.deck);
-      let currentCards = shuffled.splice(0,15);
+      let currentCards = shuffled.splice(0,12);
 
       return {
         deck: shuffled,
