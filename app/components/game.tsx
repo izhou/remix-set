@@ -1,37 +1,29 @@
 import React from "react";
 import Board from "./board";
 import Table from "./table";
-import { CardNumbers, CardShapes, CardFills, CardColors, CardData, GameState } from "./types.d";
+import { CardNumbers, CardShapes, CardFills, CardColors, CardData } from "./types.d";
+
+type GameState = {
+  activeCardsIndex: Array<number>,
+  errorMessage?: string,
+};
 
 type GameProps = {
-  title: string
-}
+  currentCards: Array<CardData | null>,
+  handleValidSet: Function
+  history: Array<Array<CardData>>,
+  isEnded: boolean,
+};
 
 export default class Game extends React.Component<GameProps, GameState> {
-  constructor(props:GameProps) {
+  constructor(props: any) {
     super(props);
 
     this.state = {
-      currentCards: [],
-      deck: createCompleteDeck(),
-      history: [],
       activeCardsIndex: [],
-      isEnded: false
-    };
+      errorMessage: undefined,
+    }
   }
-
-  componentDidMount() {
-    this.setState((state) => {
-      let shuffled = shuffleCards(state.deck);
-      let currentCards = shuffled.splice(0,12);
-
-      return {
-        deck: shuffled,
-        currentCards
-      };
-    });
-  }
-
 
   componentDidUpdate() {
     // Clear error message after 10seconds
@@ -39,7 +31,7 @@ export default class Game extends React.Component<GameProps, GameState> {
       let errorMessageTimeout = setTimeout(() => {
         this.setState(() => {
           clearTimeout(errorMessageTimeout);
-          return {errorMessage: undefined};
+          return { errorMessage: undefined };
         });
       }, 1000)
     }
@@ -50,43 +42,10 @@ export default class Game extends React.Component<GameProps, GameState> {
       activeCardsIndex: [],
       errorMessage: `Sorry, this isn't a valid set.`,
     });
-  }
+  };
 
-  handleValidSet(activeCards: Array<CardData>, activeCardsIndex: Array<number>) {
-    let deck = this.state.deck;
-    let currentCards = this.state.currentCards;
-    let history = this.state.history;
-
-    history.push(activeCards);
-
-    activeCardsIndex.forEach((index) => {
-      let card = currentCards.length > 12 ? currentCards.pop() : deck.pop();
-      currentCards[index] = card || null;
-    });
-
-    this.setState({
-      currentCards,
-      deck,
-      history,
-      activeCardsIndex: []
-    }, this.maybeEndGame);
-  }
-
-  maybeEndGame() {
-    // Deck still exists, not in end game
-    if (this.state.deck.length) return;
-
-    let sets = findSets(this.state.currentCards);
-    if (sets.length) return;
-
-    // No more sets! Game has ended.
-    this.setState({
-      isEnded: true
-    });
-  }
-
-  handleClick(index: number) {
-    if (this.state.isEnded) return;
+  handleClick(index:number) {
+    if (this.props.isEnded) return;
 
     let activeCardsIndex = this.state.activeCardsIndex;
 
@@ -98,30 +57,31 @@ export default class Game extends React.Component<GameProps, GameState> {
     // Detect current active cards
     let activeCards: Array<CardData> = [];
     activeCardsIndex.forEach((index) => {
-      let card = this.state.currentCards[index];
+      let card = this.props.currentCards[index];
       if (card !== null) activeCards.push(card);
     });
 
     // There are not three active cards yet, set active card state and continue.
-    if (activeCards.length !== 3) return this.setState({activeCardsIndex});
+    if (activeCards.length !== 3) return this.setState({ activeCardsIndex });
 
     // There are three cards that are not a set 
     if (!validateSet(activeCards)) return this.handleInvalidSet();
 
-    return this.handleValidSet(activeCards, activeCardsIndex);
+    return this.setState({
+      activeCardsIndex: []
+    }, this.props.handleValidSet(activeCards, activeCardsIndex));
   }
 
   render() {
     return (
       <div className="set-game">
-        {/* <h1>{this.props.title}</h1> */}
-        <Board 
-          cards={this.state.currentCards}
+        <Board
+          cards={this.props.currentCards}
           activeCardsIndex={this.state.activeCardsIndex}
-          onClick={(i:number) =>{this.handleClick(i)}}
+          onClick={(i: number) => { this.handleClick(i) }}
         />
-        {this.state.errorMessage && <div className="error-message">{this.state.errorMessage}</div>}
-        <Table sets={this.state.history} title="Found Sets"/>
+        {/* {this.state.errorMessage && <div className="error-message">{this.state.errorMessage}</div>} */}
+        <Table sets={this.props.history} title="Found Sets" />
       </div>
     );
   }

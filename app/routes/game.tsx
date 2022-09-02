@@ -1,4 +1,4 @@
-import Game from "~/components/game" 
+import StandardGame from "~/components/standardGame" 
 import { LinksFunction } from "@remix-run/node";
 
 import stylesUrl from "~/styles/game.css";
@@ -9,8 +9,8 @@ export const links: LinksFunction = () => {
 export default function SetRoute() {
   return (
     <> 
-      <h1>Set: Zen Mode</h1>
-      <Game title="Set: Zen Mode"/>
+      <h1>Set: Standard Game</h1>
+      <StandardGame />
     </>
   );
 }

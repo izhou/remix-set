@@ -1,10 +1,12 @@
-export interface GameState {
+export interface PuzzleGameState {
+  currentCards: Array<CardData | null>,  
+}
+
+export interface StandardGameState {
   currentCards: Array<CardData | null>,
   deck: Array<CardData>,
-  activeCardsIndex: Array<number>
   isEnded: boolean,
   history: Array<Array<CardData>>,
-  errorMessage?: string,
 }
 
 export enum CardNumbers {
