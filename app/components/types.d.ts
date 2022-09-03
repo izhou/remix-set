@@ -1,12 +1,17 @@
 export interface PuzzleGameState {
-  currentCards: Array<CardData | null>,  
+  currentCards: Array<CardData>,
+  isEnded: boolean,
+  tableEntries: Array<Array<CardData>|null>,
+  solutionIndexes: Array<string>,
+  errorMessage?:string,
 }
 
 export interface StandardGameState {
   currentCards: Array<CardData | null>,
   deck: Array<CardData>,
   isEnded: boolean,
-  history: Array<Array<CardData>>,
+  tableEntries: Array<Array<CardData>>,
+  errorMessage?: string
 }
 
 export enum CardNumbers {

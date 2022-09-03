@@ -1,22 +1,16 @@
 import React from "react";
 import Game from "./game";
 import { findSets, shuffleCards, createCompleteDeck } from "./game"
-import { CardData, GameState } from "./types.d";
+import { CardData, PuzzleGameState } from "./types.d";
 
-interface PuzzleGameState extends GameState {
-  solutionIndexes: Array<Array<number>>
-}
-
-class PuzzleGame extends React.Component<{}, PuzzleGameState> {
+export default class PuzzleGame extends React.Component<{}, PuzzleGameState> {
   constructor(props: any) {
     super(props);
 
     this.state = {
       currentCards: [],
-      activeCardsIndex: [],
-      deck: [],
-      history: [],
       isEnded: false,
+      tableEntries: [],
       solutionIndexes: [],
     };
   }
@@ -25,59 +19,69 @@ class PuzzleGame extends React.Component<{}, PuzzleGameState> {
     this.setState(() => {
       let cards = chooseCards();
       let solutions = findSets(cards);
+      console.log('solutions:' + solutions.length);
 
       return {
         currentCards: cards,
-        history: Array(solutions.length).fill(null),
+        tableEntries: Array(solutions.length).fill(null),
       };
     });
   }
 
   handleValidSet(activeCards: Array<CardData>, activeCardsIndex: Array<number>) {
-    let sortedIndex = activeCardsIndex.sort();
-    let history = this.state.history;
+    // Hack for easy string comparison for uniqueness
+    let formattedIndex = JSON.stringify(activeCardsIndex.sort());
+    let tableEntries= this.state.tableEntries;
     let solutionIndexes = this.state.solutionIndexes;
 
 
-    if (solutionIndexes.includes(sortedIndex)) {
-      return {
-        activeCardsIndex: [],
-        errorMessage: `This set has already been found.`,
-      }
+    if (solutionIndexes.includes(formattedIndex)) {
+      return this.showError(`This set has already been found.`);
     }
 
+    // Add found set to table, remove an empty row
+    tableEntries.unshift(activeCards);
+    tableEntries.pop();
+
     this.setState({
-      solutionIndexes: solutionIndexes.concat([sortedIndex]),
-      history: [activeCards].concat(history),
+      solutionIndexes: [formattedIndex].concat(solutionIndexes),
+      tableEntries
     }, this.maybeEndGame);
   }
 
   maybeEndGame() {
-    // Deck still exists, not in end game
-    if (this.state.deck.length) return;
+    // We have found all the possible sets
+    (this.state.solutionIndexes.length == this.state.tableEntries.length) && this.setState({isEnded: true});
+  }
 
-    let sets = findSets(this.state.currentCards);
-    if (sets.length) return;
-
-    // No more sets! Game has ended.
-    this.setState({
-      isEnded: true
+  showError(message: string) {
+    this.setState({ errorMessage: message }, () => {
+      let errorTimeout = setTimeout(() => {
+        this.setState({ errorMessage: undefined });
+        clearTimeout(errorTimeout);
+      }, 2500);
     });
   }
 
   render() {
-    return (<div>
-      <Game title="Daily Puzzle" />
-    </div>)
-  };
+    return (
+      <Game
+        currentCards={this.state.currentCards}
+        handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
+        tableEntries={this.state.tableEntries}
+        isEnded={this.state.isEnded}
+        showError={(message: string) => this.showError(message)}
+        errorMessage={this.state.errorMessage}
+      />
+    )
+  }
 }
 
 function chooseCards(): Array<CardData> {
   // Start with randomized deck
   let deck = shuffleCards(createCompleteDeck());
 
-  // Hack: cuarantees that there are at least 4 solns to the daily puzzle
-  let cards = findSets(deck, { numSets: 4, unique: true }).flat();
-  console.log(cards);
-  return shuffleCards(cards);
+  // Hack: guarantees that there are at least 4 solns to the daily puzzle
+  let cards = findSets(deck, { numSets: 4, unique: true });
+  return shuffleCards(cards.flat());
 }

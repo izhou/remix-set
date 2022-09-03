@@ -10,8 +10,9 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
     this.state = {
       currentCards: [],
       deck: createCompleteDeck(),
-      history: [],
-      isEnded: false
+      tableEntries: [],
+      isEnded: false,
+      errorMessage: undefined,
     };
   }
 
@@ -27,12 +28,21 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
     });
   }
 
+  showError(message: string) {
+    this.setState({errorMessage: message}, () => {
+      let errorTimeout = setTimeout(() => {
+        this.setState({errorMessage: undefined});
+        clearTimeout(errorTimeout);
+      }, 2500);
+    });
+  }
+
   handleValidSet(activeCards: Array<CardData>, activeCardsIndex: Array<number>) {
     let deck = this.state.deck;
     let currentCards = this.state.currentCards;
-    let history = this.state.history;
+    let tableEntries = this.state.tableEntries;
 
-    history.push(activeCards);
+    tableEntries.push(activeCards);
 
     activeCardsIndex.forEach((index) => {
       let card = currentCards.length > 12 ? currentCards.pop() : deck.pop();
@@ -42,7 +52,7 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
     this.setState({
       currentCards,
       deck,
-      history,
+      tableEntries,
     }, this.maybeEndGame);
   }
 
@@ -64,8 +74,10 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
       <Game
         currentCards={this.state.currentCards}
         handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
-        history={this.state.history}
+        tableEntries={this.state.tableEntries}
         isEnded={this.state.isEnded}
+        showError={(message:string)=>{this.showError(message)}}
+        errorMessage={this.state.errorMessage}
       />
     )
   }

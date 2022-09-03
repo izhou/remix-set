@@ -5,14 +5,15 @@ import { CardNumbers, CardShapes, CardFills, CardColors, CardData } from "./type
 
 type GameState = {
   activeCardsIndex: Array<number>,
-  errorMessage?: string,
 };
 
 type GameProps = {
   currentCards: Array<CardData | null>,
   handleValidSet: Function
-  history: Array<Array<CardData>>,
+  tableEntries: Array<Array<CardData>|null>,
   isEnded: boolean,
+  showError: Function,
+  errorMessage?: string,
 };
 
 export default class Game extends React.Component<GameProps, GameState> {
@@ -21,26 +22,13 @@ export default class Game extends React.Component<GameProps, GameState> {
 
     this.state = {
       activeCardsIndex: [],
-      errorMessage: undefined,
-    }
-  }
-
-  componentDidUpdate() {
-    // Clear error message after 10seconds
-    if (this.state.errorMessage) {
-      let errorMessageTimeout = setTimeout(() => {
-        this.setState(() => {
-          clearTimeout(errorMessageTimeout);
-          return { errorMessage: undefined };
-        });
-      }, 1000)
     }
   }
 
   handleInvalidSet() {
+    this.props.showError(`Sorry, that was an invalid set`);
     return this.setState({
       activeCardsIndex: [],
-      errorMessage: `Sorry, this isn't a valid set.`,
     });
   };
 
@@ -75,13 +63,17 @@ export default class Game extends React.Component<GameProps, GameState> {
   render() {
     return (
       <div className="set-game">
-        <Board
-          cards={this.props.currentCards}
-          activeCardsIndex={this.state.activeCardsIndex}
-          onClick={(i: number) => { this.handleClick(i) }}
-        />
-        {/* {this.state.errorMessage && <div className="error-message">{this.state.errorMessage}</div>} */}
-        <Table sets={this.props.history} title="Found Sets" />
+        <div className="set-game--left">
+          <Board
+            cards={this.props.currentCards}
+            activeCardsIndex={this.state.activeCardsIndex}
+            onClick={(i: number) => { this.handleClick(i) }}
+          />
+          <div className="messages">
+            {this.props.errorMessage}
+          </div>
+        </div>
+        <Table entries={this.props.tableEntries} title="Found Sets" />
       </div>
     );
   }
@@ -119,12 +111,18 @@ export function shuffleCards(cards: Array<CardData>): Array<CardData> {
   return cards;
 }
 
+function allSameOrUnique(trait: Array<string>|Array<number>): boolean {
+  return (trait[0] == trait[1]) 
+    ? trait[0] == trait[2]
+    : (trait[0] !== trait[2]) && (trait[1] !== trait[2]);
+}
+
 export function validateSet(cards: Array<CardData>): boolean {
   return cards.length == 3 
-    && (cards[0].number == cards[1].number) == (cards[0].number == cards[2].number)
-    && (cards[0].shape == cards[1].shape) == (cards[0].shape == cards[2].shape)
-    && (cards[0].fill == cards[1].fill) == (cards[0].fill == cards[2].fill)
-    && (cards[0].color == cards[1].color) == (cards[0].color == cards[2].color);
+    && allSameOrUnique([cards[0].number, cards[1].number, cards[2].number])
+    && allSameOrUnique([cards[0].color, cards[1].color, cards[2].color])
+    && allSameOrUnique([cards[0].fill, cards[1].fill, cards[2].fill])
+    && allSameOrUnique([cards[0].shape, cards[1].shape, cards[2].shape]); 
 }
 
 export function findSets(cards: Array<CardData|null>, params: {numSets?:number, unique?: boolean} = {}): Array<Array<CardData>> {
@@ -149,12 +147,14 @@ export function findSets(cards: Array<CardData|null>, params: {numSets?:number, 
 
           // If we only want unique sets, do not reuse cards at i, j, or k
           if (params.unique) {
-            i = k + 1;
+            filteredCards.splice(k,1)
+            filteredCards.splice(j,1)
+            filteredCards.splice(i,1);
             continue parentLoop;
           }
 
-          // Because there is only one distint soln to 2 cards
-          continue;
+          // Because there is only one distinct soln to 2 cards
+          break;
         }
       }
     }

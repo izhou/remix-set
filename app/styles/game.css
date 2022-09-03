@@ -15,16 +15,17 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   flex: 1 1 auto;
-  overflow: hidden;
+}
+
+.set-game--left {
+  flex: 1 0 360px;
+  max-width: calc(75vh - 2rem);
+  min-width: 260px;
 }
 
 .board {
   background-color: lightgray;
   border-radius: 0.5rem;
-  flex: 1 0 360px;
-  height: 100%;
-  max-width: calc(75vh - 2rem);
-  min-width: 260px;
 }
 
 .svg-defs {
@@ -84,7 +85,7 @@ body {
   color: #64a18d
 }
 
-.set-table {
+.table {
   height: 100%;
   max-width: 40px;
   margin-left: auto;
@@ -92,7 +93,7 @@ body {
   min-width: fit-content;
 }
 
-.set-table--row {
+.table--row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr;
