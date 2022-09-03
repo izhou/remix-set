@@ -1,5 +1,5 @@
 import PuzzleGame from "~/components/puzzleGame"
-import { LinksFunction, LoaderFunction } from "@remix-run/node";
+import { LinksFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
 import type { DailyPuzzle } from "@prisma/client";
@@ -19,10 +19,14 @@ type LoaderData = {
 }
 
 
-export const loader: LoaderFunction = async() => {
+export const loader: LoaderFunction = async ({params}) => {
   let dailyPuzzles = await db.dailyPuzzle.findMany();
-  let currentPuzzle = dailyPuzzles[0];
-  dailyPuzzles.shift();
+  let currentPuzzle = await db.dailyPuzzle.findUnique({
+    where: {date:  params.date},
+  });
+
+  // If puzzle cannot be found for that date, redirect to index
+  if (!currentPuzzle) return redirect(`/daily`);
 
   const data: LoaderData = {
     currentPuzzle: currentPuzzle,
@@ -36,10 +40,8 @@ export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
   return (
     <>
-      <h1>Set: Puzzle Game</h1>
-      <div className="daily-outlet">
-        <Outlet/>
-      </div>
+      <PuzzleGame currentCards={JSON.parse(data.currentPuzzle.cards)} />
+      {data.otherPuzzles.map((puzzle) => <div>{puzzle.date}</div>)}
     </>
   );
 }

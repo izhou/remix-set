@@ -3,27 +3,27 @@ import Game from "./game";
 import { findSets, shuffleCards, createCompleteDeck } from "./game"
 import { CardData, PuzzleGameState } from "./types.d";
 
-export default class PuzzleGame extends React.Component<{}, PuzzleGameState> {
+type PuzzleGameProps = {
+  currentCards: Array<CardData>
+}
+export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleGameState> {
   constructor(props: any) {
     super(props);
 
     this.state = {
-      currentCards: [],
+      // currentCards: [],
       isEnded: false,
-      tableEntries: [],
+      solutions: [],
       solutionIndexes: [],
     };
   }
 
   componentDidMount() {
     this.setState(() => {
-      let cards = chooseCards();
-      let solutions = findSets(cards);
-      console.log('solutions:' + solutions.length);
+      let solutions = findSets(this.props.currentCards);
 
       return {
-        currentCards: cards,
-        tableEntries: Array(solutions.length).fill(null),
+        solutions: Array(solutions.length).fill(null),
       };
     });
   }
@@ -31,7 +31,7 @@ export default class PuzzleGame extends React.Component<{}, PuzzleGameState> {
   handleValidSet(activeCards: Array<CardData>, activeCardsIndex: Array<number>) {
     // Hack for easy string comparison for uniqueness
     let formattedIndex = JSON.stringify(activeCardsIndex.sort());
-    let tableEntries= this.state.tableEntries;
+    let solutions= this.state.solutions;
     let solutionIndexes = this.state.solutionIndexes;
 
 
@@ -40,18 +40,18 @@ export default class PuzzleGame extends React.Component<{}, PuzzleGameState> {
     }
 
     // Add found set to table, remove an empty row
-    tableEntries.unshift(activeCards);
-    tableEntries.pop();
+    solutions.unshift(activeCards);
+    solutions.pop();
 
     this.setState({
       solutionIndexes: [formattedIndex].concat(solutionIndexes),
-      tableEntries
+      solutions
     }, this.maybeEndGame);
   }
 
   maybeEndGame() {
     // We have found all the possible sets
-    (this.state.solutionIndexes.length == this.state.tableEntries.length) && this.setState({isEnded: true});
+    (this.state.solutionIndexes.length == this.state.solutions.length) && this.setState({isEnded: true});
   }
 
   showError(message: string) {
@@ -66,9 +66,9 @@ export default class PuzzleGame extends React.Component<{}, PuzzleGameState> {
   render() {
     return (
       <Game
-        currentCards={this.state.currentCards}
+        currentCards={this.props.currentCards}
         handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
-        tableEntries={this.state.tableEntries}
+        tableEntries={this.state.solutions}
         isEnded={this.state.isEnded}
         showError={(message: string) => this.showError(message)}
         errorMessage={this.state.errorMessage}

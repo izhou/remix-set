@@ -19,7 +19,7 @@ type LoaderData = {
 }
 
 
-export const loader: LoaderFunction = async() => {
+export const loader: LoaderFunction = async () => {
   let dailyPuzzles = await db.dailyPuzzle.findMany();
   let currentPuzzle = dailyPuzzles[0];
   dailyPuzzles.shift();
@@ -36,10 +36,8 @@ export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
   return (
     <>
-      <h1>Set: Puzzle Game</h1>
-      <div className="daily-outlet">
-        <Outlet/>
-      </div>
+      <PuzzleGame currentCards={JSON.parse(data.currentPuzzle.cards)} />
+      {data.otherPuzzles.map((puzzle) => <div>{puzzle.date}</div>)}
     </>
   );
 }
