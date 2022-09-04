@@ -1,6 +1,6 @@
 import React from "react";
-import { CardData, CardFills } from "./types.d";
-import {CardShapes} from "./types.d";
+import { CardData, CardFills } from "../utils/types";
+import {CardShapes} from "../utils/types";
 
 const svgMap: Record<CardShapes, string> = {
   [CardShapes.Squiggle]: "m31 16c69-48 69 48 137 0 39-24 39 38 0 67-69 48-69-48-137 0-39 24-39-38 0-67",

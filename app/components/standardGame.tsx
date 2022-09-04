@@ -1,6 +1,6 @@
 import React from "react";
 import Game from "./game";
-import {createCompleteDeck, shuffleCards, findSets} from "./game";
+import {createCompleteDeck, shuffleCards, findSets} from "~/utils/cards";
 import {CardData, StandardGameState } from "./types.d"
 
 export default class StandardGame extends React.Component<{}, StandardGameState> {

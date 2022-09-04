@@ -1,10 +1,10 @@
 import { schedule } from '@netlify/functions';
-import { chooseCards } from '~/components/puzzleGame';
+import { choosePuzzleCards } from '~/utils/cards';
 import { db } from '~/utils/db.server';
 
 
 const createDailyPuzzle = async () => {
-  let cards = JSON.stringify(chooseCards());
+  let cards = JSON.stringify(choosePuzzleCards());
   // Return in yyyy-mm-dd 
   let date = new Date();
   let formattedDate = date.toISOString().slice(0,10);

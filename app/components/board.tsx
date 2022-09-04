@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./card";
-import type { CardData } from "./types.d";
+import type { CardData } from "../utils/types";
 
 type boardProps = {
   cards: Array<CardData|null>,

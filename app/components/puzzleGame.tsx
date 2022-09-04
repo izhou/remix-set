@@ -1,7 +1,7 @@
 import React from "react";
 import Game from "./game";
-import { findSets, shuffleCards, createCompleteDeck } from "./game"
-import { CardData, PuzzleGameState } from "./types.d";
+import { findSets } from "~/utils/cards"
+import { CardData, PuzzleGameState } from "../utils/types";
 
 type PuzzleGameProps = {
   currentCards: Array<CardData>
@@ -75,13 +75,4 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
       />
     )
   }
-}
-
-export function chooseCards(): Array<CardData> {
-  // Start with randomized deck
-  let deck = shuffleCards(createCompleteDeck());
-
-  // Hack: guarantees that there are at least 4 solns to the daily puzzle
-  let cards = findSets(deck, { numSets: 4, unique: true });
-  return shuffleCards(cards.flat());
 }
