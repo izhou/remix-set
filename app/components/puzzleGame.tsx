@@ -77,7 +77,7 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
   }
 }
 
-function chooseCards(): Array<CardData> {
+export function chooseCards(): Array<CardData> {
   // Start with randomized deck
   let deck = shuffleCards(createCompleteDeck());
 

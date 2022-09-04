@@ -10,7 +10,7 @@
     "start": "cross-env NODE_ENV=production netlify dev"
   },
   "dependencies": {
-    "@netlify/functions": "^1.0.0",
+    "@netlify/functions": "^1.2.0",
     "@prisma/client": "^4.3.1",
     "@remix-run/netlify": "^1.7.0",
     "@remix-run/node": "^1.7.0",

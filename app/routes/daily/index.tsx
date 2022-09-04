@@ -22,7 +22,7 @@ type LoaderData = {
 export const loader: LoaderFunction = async () => {
   let dailyPuzzles = await db.dailyPuzzle.findMany();
   let currentPuzzle = dailyPuzzles[0];
-  dailyPuzzles.shift();
+  dailyPuzzles.pop();
 
   const data: LoaderData = {
     currentPuzzle: currentPuzzle,

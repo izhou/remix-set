@@ -20,10 +20,14 @@ type LoaderData = {
 
 
 export const loader: LoaderFunction = async ({params}) => {
-  let dailyPuzzles = await db.dailyPuzzle.findMany();
   let currentPuzzle = await db.dailyPuzzle.findUnique({
     where: {date:  params.date},
   });
+
+  let dailyPuzzles = await db.dailyPuzzle.findMany();
+
+  // Filter out existing puzzle
+  dailyPuzzles = dailyPuzzles.filter((puzzle) => puzzle.date !== params.date);
 
   // If puzzle cannot be found for that date, redirect to index
   if (!currentPuzzle) return redirect(`/daily`);
