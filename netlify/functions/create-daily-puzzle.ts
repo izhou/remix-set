@@ -22,4 +22,4 @@ const createDailyPuzzle = async () => {
   };
 };
 
-export const handler = schedule('@daily', createDailyPuzzle);
+export const handler = schedule('0 7 * * *', createDailyPuzzle);

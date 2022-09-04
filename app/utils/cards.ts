@@ -41,13 +41,13 @@ export function choosePuzzleCards(): Array<CardData> {
   return shuffleCards(cards.flat());
 }
 
-function allSameOrUnique(trait: Array<string> | Array<number>): boolean {
+function allSameOrUnique(trait: [string, string, string] | [number,number, number]): boolean {
   return (trait[0] == trait[1])
     ? trait[0] == trait[2]
     : (trait[0] !== trait[2]) && (trait[1] !== trait[2]);
 }
 
-export function validateSet(cards: Array<CardData>): boolean {
+export function validateSet(cards: [CardData, CardData, CardData]): boolean {
   return cards.length == 3
     && allSameOrUnique([cards[0].number, cards[1].number, cards[2].number])
     && allSameOrUnique([cards[0].color, cards[1].color, cards[2].color])
@@ -56,7 +56,7 @@ export function validateSet(cards: Array<CardData>): boolean {
 }
 
 export function findSets(cards: Array<CardData | null>, params: { numSets?: number, unique?: boolean } = {}): Array<Array<CardData>> {
-  let sets: Array<Array<CardData>> = [];
+  let sets: Array<[CardData, CardData, CardData]> = [];
   let filteredCards: Array<CardData> = [];
 
   cards.forEach((card) => {

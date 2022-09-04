@@ -6,13 +6,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model DailyPuzzle {
-  id          String @id @default(uuid())
-  createdAt   DateTime @default(now())
-  date        String @unique
-  cards       String @unique
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime  @default(now())
+  date        String    @unique
+  cards       String    @unique
 }

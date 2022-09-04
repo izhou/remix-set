@@ -1,7 +1,7 @@
 import React from "react";
 import Board from "./board";
 import Table from "./table";
-import { CardData } from "./types.d";
+import { CardData } from "../utils/types";
 import { validateSet } from "~/utils/cards";
 
 type GameState = {
@@ -54,7 +54,7 @@ export default class Game extends React.Component<GameProps, GameState> {
     if (activeCards.length !== 3) return this.setState({ activeCardsIndex });
 
     // There are three cards that are not a set 
-    if (!validateSet(activeCards)) return this.handleInvalidSet();
+    if (!validateSet(activeCards as [CardData, CardData, CardData] )) return this.handleInvalidSet();
 
     return this.setState({
       activeCardsIndex: []
