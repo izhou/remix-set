@@ -4,6 +4,7 @@ import { FormField } from '~/components/formField'
 import { ActionFunction, json, LoaderFunction, redirect } from '@remix-run/node'
 // import { login, register, getUser } from '~/utils/auth.server'
 import { useActionData } from '@remix-run/react'
+import { createUser } from '~/utils/auth.server';
 
 type ActionData = {
   formError?: string;
@@ -37,7 +38,7 @@ function validatePassword(password: unknown) {
 export const action: ActionFunction = async({request}) => {
 
   const form = await request.formData();
-  const action = form.get("action");
+  const action = form.get("_action");
   const username = form.get("username");
   const password = form.get("password");
 
@@ -59,17 +60,12 @@ export const action: ActionFunction = async({request}) => {
 
   switch (action) {
     case "register": {
-      // TODO: check against existing users, then create 
-      return badRequest({
-        fields,
-        formError: "Not implemented",
-      });
+      return createUser({ username, password });
     }
     case "login":
     default: {
       // login to get the user
       // if there's no user, return the fields and a formError
-      // if there is a user, create their session and redirect to /jokes
       return badRequest({
         fields,
         formError: "Not implemented",
@@ -100,7 +96,7 @@ export default function Login() {
         >{action === 'login' ? 'Sign Up' : 'Sign In'}</button>
         <h2>Remix-Set</h2>
         <p>{action === 'login' ? 'Sign in' : 'Sign up'} to save your progress!</p>
-        <form method="POST">
+        <form method="post">
           <FormField
             htmlFor="username"
             label="Username"
