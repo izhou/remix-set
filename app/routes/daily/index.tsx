@@ -1,5 +1,5 @@
 import PuzzleGame from "~/components/puzzleGame"
-import { LinksFunction, LoaderFunction, redirect } from "@remix-run/node";
+import { LinksFunction, LoaderFunction, ActionFunction, redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
 import type { DailyPuzzle } from "@prisma/client";
@@ -8,34 +8,30 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
 
 type LoaderData = {
-  currentPuzzle: DailyPuzzle,
-  allPuzzles: Array<DailyPuzzle>,
+  puzzle: DailyPuzzle,
 }
 
+export const action:ActionFunction = async({request}) =>{
+  const form = await request.formData();
+  const date = form.get("date");
 
-export const loader: LoaderFunction = async ({ params }) => {
-  let allPuzzles = await db.dailyPuzzle.findMany({
+  return redirect(`/daily/${date}`);
+}
+
+export const loader: LoaderFunction = async () => {
+  // By default, show the most recent puzzle
+  let puzzle = await db.dailyPuzzle.findFirst({
     orderBy: { date: 'desc' }
   });
 
-  let currentPuzzle = allPuzzles[0];
+  if (!puzzle) throw Error('no puzzles available');
 
-  const data: LoaderData = {
-    currentPuzzle,
-    allPuzzles,
-  }
-
-  return json(data);
+  return json({ puzzle });
 }
 
 export default function IndexRoute() {
   const data = useLoaderData<LoaderData>();
   return (
-    <>
-      <PuzzleGame currentCards={JSON.parse(data.currentPuzzle.cards)} />
-      {data.allPuzzles.map((puzzle) => puzzle.date !== data.currentPuzzle.date 
-        && <Link to={puzzle.date} key={puzzle.date}>{puzzle.date}</Link>)
-      }
-    </>
+    <PuzzleGame currentCards={JSON.parse(data.puzzle.cards)} />
   );
 }
