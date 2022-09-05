@@ -1,7 +1,7 @@
 import React from "react";
 import Game from "./game";
 import { findSets } from "~/utils/cards"
-import { CardData, PuzzleGameState } from "../utils/types";
+import { CardData, PuzzleGameState } from "~/utils/types";
 
 type PuzzleGameProps = {
   currentCards: Array<CardData>

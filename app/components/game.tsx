@@ -1,7 +1,7 @@
 import React from "react";
 import Board from "./board";
 import Table from "./table";
-import { CardData } from "../utils/types";
+import { CardData } from "~/utils/types";
 import { validateSet } from "~/utils/cards";
 
 type GameState = {

@@ -1,11 +1,11 @@
 import React from "react";
-import { CardData, CardFills } from "../utils/types";
-import {CardShapes} from "../utils/types";
+import { CardData, CardFills } from "~/utils/types";
+import {CardShapes} from "~/utils/types";
 
 const svgMap: Record<CardShapes, string> = {
-  [CardShapes.Squiggle]: "m31 16c69-48 69 48 137 0 39-24 39 38 0 67-69 48-69-48-137 0-39 24-39-38 0-67",
-  [CardShapes.Oval]: "m51 2a.98.96 0 000 96h98a.98.96 0 000-96H51",
-  [CardShapes.Diamond]: "m2 50 98-48 98 48-98 48z"
+  [CardShapes.Squiggle]: "m32.5 18c70-46.5 68 46.5 134.5 0 38-23 38 37 0 65-70 46.5-68-46.5-134.5 0-38 23-38-37 0-65",
+  [CardShapes.Oval]: "m52 4a.96.92 0 000 92h96a.96.92 0 000-92H52",
+  [CardShapes.Diamond]: "m2 50 96-46 96 46-96 46z"
 }
 
 type cardProps = {
@@ -28,7 +28,7 @@ export default function Card(props: cardProps) {
         <path
           d={svgMap[props.data.shape]}
           fill="none"
-          strokeWidth="4px"
+          strokeWidth="6px"
           stroke="currentcolor"
         ></path>
       </svg>

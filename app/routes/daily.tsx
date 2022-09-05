@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     orderBy: { date: 'desc' }
   });
 
-  let currentDate = params.date;
+  let currentDate = params.date || newestPuzzle?.date;
 
   const data: LoaderData = {
     oldestDate: oldestPuzzle?.date,

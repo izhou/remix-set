@@ -1,4 +1,4 @@
-import { CardNumbers, CardShapes, CardFills, CardColors, CardData } from "~/utils/types";
+import { CardNumbers, CardShapes, CardFills, CardColors, CardData } from "./types";
 
 export function createCompleteDeck(): Array<CardData> {
   let deck: Array<CardData> = [];
