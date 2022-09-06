@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
-import { LoaderFunction, LinksFunction, redirect, json } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { LoaderFunction, LinksFunction, json } from "@remix-run/node";
+import { Outlet, useLoaderData, Link } from "@remix-run/react";
 import stylesUrl from "~/styles/game.css";
 import { getUser } from "~/utils/auth.server";
 import { db } from "~/utils/db.server";
@@ -42,31 +42,20 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
     return (
-    <div className = "grid-container">
-      <h1 className="grid-header-left">Set: Daily Puzzle</h1>
-      <div className="grid-header-right">
-        { data.user 
-          ? <>
-              <div>Hello ${data.user.username}</div>
-              <div>Logout</div>
-            </>
-          : `Login`
-        }
-      </div>
-      
+    <>
+      <h1 className="grid-header-left">Set: Daily Puzzle</h1>      
       <Outlet/>
-
-        <div className="grid-footer-right">
-          <p>Choose another date:</p>
-            <form method="post" action="?index">
-              <input type="date" name="date"
-                min={data.oldestDate}
-                max={data.newestDate}
-                defaultValue={data.currentDate}
-              ></input>
-              <button type="submit">Go</button>
-            </form>
-        </div>
-    </div>
+      <div className="grid-footer-right">
+        <p>Choose another date:</p>
+          <form method="post" action="?index">
+            <input type="date" name="date"
+              min={data.oldestDate}
+              max={data.newestDate}
+              defaultValue={data.currentDate}
+            ></input>
+            <button type="submit">Go</button>
+          </form>
+      </div>
+    </>
   );
 }
