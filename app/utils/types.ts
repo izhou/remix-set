@@ -1,8 +1,7 @@
 export interface PuzzleGameState {
   // currentCards: Array<CardData>,
   isEnded: boolean,
-  solutions: Array<Array<CardData>>,
-  solutionIndexes: Array<string>,
+  numSolutions: number,
   errorMessage?:string,
 }
 
@@ -10,7 +9,7 @@ export interface StandardGameState {
   currentCards: Array<CardData | null>,
   deck: Array<CardData>,
   isEnded: boolean,
-  tableEntries: Array<Array<CardData>>,
+  tableEntries: Array<[CardData,CardData,CardData]>,
   errorMessage?: string
 }
 

@@ -1,22 +1,29 @@
 import React from "react";
 import Card from "./card";
-import { CardData } from "~/utils/types";
+import { CardData } from "../utils/types";
 
 type TableProps = {
-  entries: Array<Array<CardData> | null>
+  entries: Array<[CardData, CardData, CardData]>,
+  length ?: number,
   title: string
 };
 
 export default function Table(props: TableProps) {
-  return (
-    <div className="table">
-      <h1 className="table--title">{props.title}</h1>
+  let entries = props.entries;
+  let numEmpty = props.length ? props.length - props.entries.length : 0;
 
-      {props.entries.map((entry, index) =>
-        <div className="table--row" key={index}>
-          {entry && entry.map((card, i) => <Card data={card} key={i}/>)}
-        </div>
-      )}
-    </div>
+  if (numEmpty >= 0) entries = entries.concat(Array(numEmpty).fill([null, null, null]));
+
+  return (
+    entries.length ? <div className="grid-main-right table-container">
+      <strong className="table--title">{props.title}</strong>
+      <div className="table">
+        {entries.map((entry, index) => (
+          <div className="table--row" key={index}>
+            {entry.map((card, i) => <Card data={card} key={i} />)}
+          </div>
+        ))}
+      </div>
+    </div> : <></>
   )
 }

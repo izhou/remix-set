@@ -1,7 +1,8 @@
 import React from "react";
 import Game from "./game";
+import Table from "./table";
 import {createCompleteDeck, shuffleCards, findSets} from "~/utils/cards";
-import {CardData, StandardGameState } from "~/utils/types"
+import {CardData, StandardGameState } from "../utils/types"
 
 export default class StandardGame extends React.Component<{}, StandardGameState> {
   constructor(props: any) {
@@ -37,7 +38,7 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
     });
   }
 
-  handleValidSet(activeCards: Array<CardData>, activeCardsIndex: Array<number>) {
+  handleValidSet(activeCards:[CardData, CardData, CardData], activeCardsIndex: Array<number>) {
     let deck = this.state.deck;
     let currentCards = this.state.currentCards;
     let tableEntries = this.state.tableEntries;
@@ -71,14 +72,17 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
 
   render() {
     return (
-      <Game
-        currentCards={this.state.currentCards}
-        handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
-        tableEntries={this.state.tableEntries}
-        isEnded={this.state.isEnded}
-        showError={(message:string)=>{this.showError(message)}}
-        errorMessage={this.state.errorMessage}
-      />
+      <>
+        <Game
+          currentCards={this.state.currentCards}
+          handleValidSet={(activeCards:[CardData,CardData,CardData], activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
+          isEnded={this.state.isEnded}
+          showError={(message:string)=>{this.showError(message)}}
+          errorMessage={this.state.errorMessage}
+        />
+
+        <Table entries={this.state.tableEntries} title="Found Sets" />
+      </>
     )
   }
 }

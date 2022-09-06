@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./card";
-import type { CardData } from "~/utils/types";
+import type { CardData } from "../utils/types";
 
 type boardProps = {
   cards: Array<CardData|null>,
@@ -28,7 +28,7 @@ export default class Board extends React.Component<boardProps> {
 
   render() {
     return (
-      <div className="board">
+      <div className="board grid-main-left">
         {/* Generates SVG definitions needed to create stripey symbols */}
         <svg className="svg-defs">
           <defs>

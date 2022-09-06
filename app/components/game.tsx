@@ -1,6 +1,6 @@
 import React from "react";
 import Board from "./board";
-import Table from "./table";
+
 import { CardData } from "~/utils/types";
 import { validateSet } from "~/utils/cards";
 
@@ -11,7 +11,7 @@ type GameState = {
 type GameProps = {
   currentCards: Array<CardData | null>,
   handleValidSet: Function
-  tableEntries: Array<Array<CardData>|null>,
+  // tableEntries: Array<Array<CardData>|null>,
   isEnded: boolean,
   showError: Function,
   errorMessage?: string,
@@ -63,19 +63,17 @@ export default class Game extends React.Component<GameProps, GameState> {
 
   render() {
     return (
-      <div className="set-game">
-        <div className="set-game--left">
-          <Board
-            cards={this.props.currentCards}
-            activeCardsIndex={this.state.activeCardsIndex}
-            onClick={(i: number) => { this.handleClick(i) }}
-          />
-          <div className="messages">
-            {this.props.errorMessage}
-          </div>
+      <>
+        <Board
+          cards={this.props.currentCards}
+          activeCardsIndex={this.state.activeCardsIndex}
+          onClick={(i: number) => { this.handleClick(i) }}
+        />
+        <div className="messages grid-footer-left">
+          {this.props.errorMessage}
         </div>
-        <Table entries={this.props.tableEntries} title="Found Sets" />
-      </div>
+      </>
+
     );
   }
 }

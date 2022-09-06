@@ -1,5 +1,6 @@
 import React from "react";
 import Game from "./game";
+import Table from "./table";
 import { findSets } from "~/utils/cards"
 import { CardData, PuzzleGameState } from "../utils/types";
 
@@ -8,14 +9,14 @@ type PuzzleGameProps = {
   history: Array<string>
   updateHistory: Function
 }
+
 export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleGameState> {
   constructor(props: PuzzleGameProps) {
     super(props)
 
     this.state = {
       isEnded: false,
-      solutions: [],
-      solutionIndexes: [],
+      numSolutions: findSets(this.props.currentCards).length,
     };
   }
 
@@ -32,19 +33,15 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
 
   maybeEndGame() {
     // We have found all the possible sets
-    (this.state.solutionIndexes.length == this.state.solutions.length) && this.setState({isEnded: true});
+    (this.state.numSolutions == this.props.history.length) && this.setState({isEnded: true});
   }
 
-  buildTableEntries():Array<Array<CardData>|null> {
-    let solutions = findSets(this.props.currentCards);
-    let entries = Array(solutions.length).fill(null);
-
-    this.props.history.forEach((cardIndexString, index) => {
-      let indexes = JSON.parse(cardIndexString);
-      entries[index] = indexes.map((index:number) => this.props.currentCards[index])
-    })
-
-    return entries;
+  buildTableEntries():Array<[CardData,CardData,CardData]> {
+    let currentCards = this.props.currentCards;
+    return this.props.history.map((cardIndexes:string) => {
+      let indexes = JSON.parse(cardIndexes);
+      return indexes.map((index:number)=> currentCards[index]);
+    });
   }
 
   showError(message: string) {
@@ -52,20 +49,23 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
       let errorTimeout = setTimeout(() => {
         this.setState({ errorMessage: undefined });
         clearTimeout(errorTimeout);
-      }, 2500);
+      }, 3000);
     });
   }
 
   render() {
     return (
-      <Game
-        currentCards={this.props.currentCards}
-        handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
-        tableEntries={this.buildTableEntries()}
-        isEnded={this.state.isEnded}
-        showError={(message: string) => this.showError(message)}
-        errorMessage={this.state.errorMessage}
-      />
+      <>
+        <Game
+          currentCards={this.props.currentCards}
+          handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
+          isEnded={this.state.isEnded}
+          showError={(message: string) => this.showError(message)}
+          errorMessage={this.state.errorMessage}
+        />
+
+        <Table entries={this.buildTableEntries()} length={this.state.numSolutions} title="Solutions" />
+      </>
     )
   }
 }
