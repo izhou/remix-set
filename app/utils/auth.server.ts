@@ -24,6 +24,20 @@ const storage = createCookieSessionStorage({
   },
 });
 
+async function createUserSession(userId: string, redirectTo: string) {
+  const session = await storage.getSession();
+  session.set("userId", userId);
+  return redirect(redirectTo, {
+    headers: {
+      "Set-Cookie": await storage.commitSession(session),
+    },
+  });
+}
+
+function getUserSession(request: Request) {
+  return storage.getSession(request.headers.get("Cookie"));
+}
+
 export async function createUser(user: UserForm) {
   const exists = await db.user.count({ where: { username: user.username } });
   if (exists) {
@@ -54,33 +68,7 @@ export async function createUser(user: UserForm) {
   return createUserSession(newUser.id, "/");
 }
 
-// Validate the user on username & password
-export async function login({ username, password }: UserForm) {
-  const user = await db.user.findUnique({
-    where: { username },
-  });
-
-  if (!user || !(await bcrypt.compare(password, user.password)))
-    return json({ error: `Incorrect login` }, { status: 400 });
-
-  return createUserSession(user.id, "/");
-}
-
-export async function createUserSession(userId: string, redirectTo: string) {
-  const session = await storage.getSession();
-  session.set("userId", userId);
-  return redirect(redirectTo, {
-    headers: {
-      "Set-Cookie": await storage.commitSession(session),
-    },
-  });
-}
-
-export function getUserSession(request: Request) {
-  return storage.getSession(request.headers.get("Cookie"));
-}
-
-async function getUserId(request: Request) {
+export async function getUserId(request: Request) {
   const session = await getUserSession(request);
   const userId = session.get("userId");
   if (!userId || typeof userId !== "string") return null;

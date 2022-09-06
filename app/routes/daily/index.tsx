@@ -1,15 +1,6 @@
-import PuzzleGame from "~/components/puzzleGame"
-import { LinksFunction, LoaderFunction, ActionFunction, redirect } from "@remix-run/node";
-import { json } from "@remix-run/node";
-
-import type { DailyPuzzle } from "@prisma/client";
-import { Link, useLoaderData } from "@remix-run/react";
+import { LoaderFunction, ActionFunction, redirect } from "@remix-run/node";
 
 import { db } from "~/utils/db.server";
-
-type LoaderData = {
-  puzzle: DailyPuzzle,
-}
 
 export const action:ActionFunction = async({request}) =>{
   const form = await request.formData();
@@ -25,13 +16,12 @@ export const loader: LoaderFunction = async () => {
   });
 
   if (!puzzle) throw Error('no puzzles available');
-
-  return json({ puzzle });
+  return redirect(`/daily/${puzzle.date}`);
+  
 }
 
 export default function IndexRoute() {
-  const data = useLoaderData<LoaderData>();
   return (
-    <PuzzleGame currentCards={JSON.parse(data.puzzle.cards)} />
+    <></>
   );
 }
