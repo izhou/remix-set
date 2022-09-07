@@ -1,7 +1,7 @@
 import React from "react";
 import Board from "./board";
 
-import { CardData } from "~/utils/types";
+import { CardData, Set } from "~/utils/types";
 import { validateSet } from "~/utils/cards";
 
 type GameState = {
@@ -11,7 +11,6 @@ type GameState = {
 type GameProps = {
   currentCards: Array<CardData | null>,
   handleValidSet: Function
-  // tableEntries: Array<Array<CardData>|null>,
   isEnded: boolean,
   showError: Function,
   errorMessage?: string,
@@ -54,7 +53,7 @@ export default class Game extends React.Component<GameProps, GameState> {
     if (activeCards.length !== 3) return this.setState({ activeCardsIndex });
 
     // There are three cards that are not a set 
-    if (!validateSet(activeCards as [CardData, CardData, CardData] )) return this.handleInvalidSet();
+    if (!validateSet(activeCards as Set )) return this.handleInvalidSet();
 
     return this.setState({
       activeCardsIndex: []
@@ -63,17 +62,12 @@ export default class Game extends React.Component<GameProps, GameState> {
 
   render() {
     return (
-      <>
         <Board
           cards={this.props.currentCards}
           activeCardsIndex={this.state.activeCardsIndex}
           onClick={(i: number) => { this.handleClick(i) }}
+          errorMessage={this.props.errorMessage}
         />
-        <div className="messages grid-footer-left">
-          {this.props.errorMessage}
-        </div>
-      </>
-
     );
   }
 }

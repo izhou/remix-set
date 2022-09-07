@@ -6,6 +6,7 @@ type boardProps = {
   cards: Array<CardData|null>,
   activeCardsIndex: Array<number>
   onClick: Function
+  errorMessage ?: string
 };
 
 export default class Board extends React.Component<boardProps> {
@@ -49,6 +50,8 @@ export default class Board extends React.Component<boardProps> {
             card ? this.renderCard(card, index): <div className="no-card" key={index}></div>
           )}
         </div>
+
+        <p className="error-message">{this.props.errorMessage}</p>
       </div>
     )
   }

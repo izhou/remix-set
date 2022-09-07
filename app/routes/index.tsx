@@ -26,7 +26,7 @@ export default function IndexRoute() {
           <ul>
             <li>
               <Link to="game">Instructions</Link>
-              <Link to="game">Standard Game</Link>
+              <Link to="standard">Standard Game</Link>
               <Link to="daily">Daily Puzzle</Link>
             </li>
           </ul>

@@ -2,7 +2,7 @@ import React from "react";
 import Game from "./game";
 import Table from "./table";
 import { findSets } from "~/utils/cards"
-import { CardData, PuzzleGameState } from "../utils/types";
+import { CardData, Set, PuzzleGameState } from "../utils/types";
 
 type PuzzleGameProps = {
   currentCards: Array<CardData>
@@ -41,7 +41,7 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
     (this.state.numSolutions == this.state.history.length) && this.setState({isEnded: true});
   }
 
-  buildTableEntries():Array<[CardData,CardData,CardData]> {
+  buildTableEntries():Array<Set> {
     let currentCards = this.props.currentCards;
     return this.state.history.map((cardIndexes:string) => {
       let indexes = JSON.parse(cardIndexes);

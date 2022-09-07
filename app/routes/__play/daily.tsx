@@ -43,7 +43,11 @@ export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
     return (
     <>
-      <h1 className="grid-header-left">Set: Daily Puzzle</h1>      
+      <div className = "grid-header-left">
+        <h1>Set: Daily Puzzle</h1>
+        <p>Find all possible sets in the below 12 cards.</p>
+      </div>
+
       <Outlet/>
       <div className="grid-footer-right">
         <p>Choose another date:</p>

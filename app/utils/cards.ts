@@ -1,4 +1,4 @@
-import { CardNumbers, CardShapes, CardFills, CardColors, CardData } from "./types";
+import { CardNumbers, CardShapes, CardFills, CardColors, CardData, Set } from "./types";
 
 export function createCompleteDeck(): Array<CardData> {
   let deck: Array<CardData> = [];
@@ -47,7 +47,7 @@ function allSameOrUnique(trait: [string, string, string] | [number,number, numbe
     : (trait[0] !== trait[2]) && (trait[1] !== trait[2]);
 }
 
-export function validateSet(cards: [CardData, CardData, CardData]): boolean {
+export function validateSet(cards: Set): boolean {
   return cards.length == 3
     && allSameOrUnique([cards[0].number, cards[1].number, cards[2].number])
     && allSameOrUnique([cards[0].color, cards[1].color, cards[2].color])
@@ -56,7 +56,7 @@ export function validateSet(cards: [CardData, CardData, CardData]): boolean {
 }
 
 export function findSets(cards: Array<CardData | null>, params: { numSets?: number, unique?: boolean } = {}): Array<Array<CardData>> {
-  let sets: Array<[CardData, CardData, CardData]> = [];
+  let sets: Array<Set> = [];
   let filteredCards: Array<CardData> = [];
 
   cards.forEach((card) => {

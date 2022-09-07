@@ -21,7 +21,7 @@ export default function PlayRoute() {
   const data = useLoaderData<LoaderData>();
   return (
     <div className="grid-container">
-      <div className="grid-header-right">
+      <div className="grid-header-right login">
         {data.user
           ? <>
             <div>Hello <strong>{data.user.username}</strong></div>
@@ -33,6 +33,10 @@ export default function PlayRoute() {
           </>
           : <Link to="/login">Sign in to save progress</Link>
         }
+      </div>
+
+      <div className="grid-footer-left">
+        <Link to="/">{`< Home`}</Link>
       </div>
       <Outlet />
     </div>

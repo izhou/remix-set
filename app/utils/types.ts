@@ -1,5 +1,4 @@
 export interface PuzzleGameState {
-  // currentCards: Array<CardData>,
   isEnded: boolean,
   numSolutions: number,
   errorMessage?:string,
@@ -10,7 +9,7 @@ export interface StandardGameState {
   currentCards: Array<CardData | null>,
   deck: Array<CardData>,
   isEnded: boolean,
-  tableEntries: Array<[CardData,CardData,CardData]>,
+  tableEntries: Array<Set>,
   errorMessage?: string
 }
 
@@ -44,3 +43,6 @@ export interface CardData {
   fill: CardFills;
   color: CardColors;
 }
+
+export type Set = [CardData, CardData, CardData];
+export type SetIndex = [number, number, number];
