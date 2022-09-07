@@ -7,17 +7,22 @@ import { CardData, Set, PuzzleGameState } from "../utils/types";
 type PuzzleGameProps = {
   currentCards: Array<CardData>
   history: Array<string>
-  updateHistory: Function
+  updateHistory?: Function
+  deleteHistory?: Function
 }
 
 export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleGameState> {
   constructor(props: PuzzleGameProps) {
     super(props)
 
+    let numSolutions = findSets(this.props.currentCards).length;
+    let history = this.props.history;
+    let isEnded = history.length == numSolutions;
+
     this.state = {
-      isEnded: false,
-      numSolutions: findSets(this.props.currentCards).length,
-      history: this.props.history,
+      numSolutions,
+      history,
+      isEnded
     };
   }
 
@@ -31,14 +36,11 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
     }
 
     history.push(formattedIndex);
-    this.setState({ history });
+
+    let isEnded = history.length == this.state.numSolutions
+    this.setState({ history, isEnded });
     
     if (this.props.updateHistory) this.props.updateHistory(formattedIndex);
-  }
-
-  maybeEndGame() {
-    // We have found all the possible sets
-    (this.state.numSolutions == this.state.history.length) && this.setState({isEnded: true});
   }
 
   buildTableEntries():Array<Set> {
@@ -58,18 +60,43 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
     });
   }
 
+  deleteHistory() {
+    this.setState({
+      history: [],
+      isEnded: false
+    });
+
+    if (this.props.deleteHistory) this.props.deleteHistory();
+  }
+
   render() {
     return (
       <>
-        <Game
-          currentCards={this.props.currentCards}
-          handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
-          isEnded={this.state.isEnded}
-          showError={(message: string) => this.showError(message)}
-          errorMessage={this.state.errorMessage}
-        />
+        <div className="grid-main-left">
+          <p>Find all possible sets in the below 12 cards.</p>
+          <Game
+            currentCards={this.props.currentCards}
+            handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
+            showError={(message: string) => this.showError(message)}
+            errorMessage={this.state.errorMessage}
+            isEnded={this.state.isEnded}
+          />
+        </div>
 
-        <Table entries={this.buildTableEntries()} length={this.state.numSolutions} title="Solutions" />
+        <div className="grid-main-right">
+          <Table entries={this.buildTableEntries()} length={this.state.numSolutions} title="Solutions" />
+          {!!this.state.history.length && <p><button onClick={() => { this.deleteHistory() }}>Restart</button></p>}
+        </div>
+
+        {this.state.isEnded && 
+          <div className="end-modal">
+            <div></div>
+            <div>
+              <h1>Congratulations!</h1>
+              <p>You've found all the possible sets.</p>
+            </div>
+            <p><button onClick={() => { this.deleteHistory() }}>Restart</button></p>
+          </div>}
       </>
     )
   }

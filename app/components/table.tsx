@@ -17,8 +17,8 @@ export default function Table(props: TableProps) {
 
   return (
     entries.length ? <>
-      <strong className="table--title grid-header-right"><p>{props.title}</p></strong>
-      <div className="grid-main-right table-container">
+      <strong className="table--title"><p>{props.title}</p></strong>
+      <div className="table-container">
         <div className="table">
           {entries.map((entry, index) => (
             <div className="table--row" key={index}>

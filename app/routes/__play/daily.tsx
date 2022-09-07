@@ -45,7 +45,6 @@ export default function DailyPuzzlesRoute() {
     <>
       <div className = "grid-header-left">
         <h1>Set: Daily Puzzle</h1>
-        <p>Find all possible sets in the below 12 cards.</p>
       </div>
 
       <Outlet/>

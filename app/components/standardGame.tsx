@@ -102,24 +102,30 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
     });
   }
 
+  restart() {
+
+  }
   render() {
     return (
       <>
-        <Game
-          currentCards={this.state.currentCards}
-          handleValidSet={(activeCards: Set, activeCardsIndex: SetIndex) => this.handleValidSet(activeCards, activeCardsIndex)}
-          isEnded={this.state.isEnded}
-          showError={(message:string)=>{this.showError(message)}}
-          errorMessage={this.state.errorMessage}
-        />
+        <div className="grid-main-left">
+          <p>Find all possible sets in the below 12 cards.</p>
+          <Game
+            currentCards={this.state.currentCards}
+            handleValidSet={(activeCards: Set, activeCardsIndex: SetIndex) => this.handleValidSet(activeCards, activeCardsIndex)}
+            isEnded={this.state.isEnded}
+            showError={(message:string)=>{this.showError(message)}}
+            errorMessage={this.state.errorMessage}
+          />
+          {this.state.deck.length > 0 &&
+            <p className="add-more">Stuck? <button onClick={() => { this.addCards() }}>Add more cards</button></p>
+          }
+        </div>
 
-        <Table entries={this.state.tableEntries} title="Found Sets" />
-        {this.state.deck.length > 0 && 
-          <div className="addMore grid-footer-right">
-            <div>
-              Stuck? <button onClick={() => { this.addCards() }}>Add more cards</button></div>
-            </div>
-        }
+        <div className="grid-main-right">
+          <Table entries={this.state.tableEntries} title="Found Sets" />
+        </div>
+
       </>
     )
   }

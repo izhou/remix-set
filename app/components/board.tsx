@@ -29,7 +29,7 @@ export default class Board extends React.Component<boardProps> {
 
   render() {
     return (
-      <div className="board grid-main-left">
+      <div className="board">
         {/* Generates SVG definitions needed to create stripey symbols */}
         <svg className="svg-defs">
           <defs>
@@ -51,7 +51,7 @@ export default class Board extends React.Component<boardProps> {
           )}
         </div>
 
-        <p className="error-message">{this.props.errorMessage}</p>
+        <p className="error-message">{this.props.errorMessage || <>&nbsp;</>}</p>
       </div>
     )
   }

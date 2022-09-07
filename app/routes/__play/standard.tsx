@@ -9,7 +9,10 @@ export const links: LinksFunction = () => {
 export default function SetRoute() {
   return (
     <>
-      <h1 className="grid-header-left">Set: Standard Game</h1>
+      <div className="grid-header-left">
+        <h1>Set: Daily Puzzle</h1>
+      </div>
+
       <StandardGame />
     </>
   );

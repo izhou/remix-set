@@ -1,8 +1,8 @@
 export interface PuzzleGameState {
-  isEnded: boolean,
   numSolutions: number,
   errorMessage?:string,
   history: Array<string>
+  isEnded: boolean,
 }
 
 export interface StandardGameState {

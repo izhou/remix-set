@@ -13,6 +13,7 @@ import { getUserId } from "~/utils/auth.server";
 type LoaderData = {
   puzzle: DailyPuzzle,
   history: DailyPuzzleHistory
+  userId: number
 }
 
 export const loader: LoaderFunction = async ({request, params}) => {
@@ -35,7 +36,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
     }
   }) : [];
 
-  return json({puzzle, history});
+  return json({puzzle, history, userId});
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -48,17 +49,25 @@ export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
   const fetcher = useFetcher();
   
-  const updateHistory = async(foundSet: string) => {
+  const updateHistory = !!data.userId ? async(foundSet: string) => {
     fetcher.submit(
-      { date: data.puzzle.date, foundSet },
+      { date: data.puzzle.date, action: 'update', foundSet },
       { method: "post", action: "/daily/update-history" }
     );
-  };
+  } : undefined;
+
+  const deleteHistory = !!data.userId ? async (foundSet: string) => {
+    fetcher.submit(
+      { date: data.puzzle.date },
+      { method: "post", action: "/daily/delete-history" }
+    );
+  }: undefined;
 
   return (
       <PuzzleGame 
         currentCards={JSON.parse(data.puzzle.cards)}
         updateHistory={updateHistory}
+        deleteHistory={deleteHistory}
         history={data.history?.foundSets || []}
       />
   );

@@ -1,5 +1,5 @@
 :root{
-  --max-board-width: calc(75vh - 6rem);
+  --max-left-width: calc(75vh - 8rem);
 }
 
 body {
@@ -69,15 +69,17 @@ body {
 }
 
 .table-container {
-  height: 100%;
-  min-height: 0;
+  /* height: 100%;
+  min-height: 0; */
   display: flex;
   flex-direction: column;
+
+  min-height: 0;
+  flex: 1 0 0px;
 }
 
 .table {
     overflow: scroll;
-    min-width: fit-content;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -108,13 +110,20 @@ body {
 
 .grid-main-left {
   grid-area: main-left;
-  max-width: var(--max-board-width);
+  max-width: var(--max-left-width);
   min-width: 360px;
 }
 
 .grid-main-right {
   grid-area: main-right;
   text-align: center;
+
+}
+
+.grid-main-left,
+.grid-main-right {
+  display: flex;
+  flex-direction: column;
 }
 
 .grid-footer-left {
@@ -152,6 +161,24 @@ body {
     "footer-left footer-right";
 }
 
-.login {
-  justify-content: flex-start;
+.end-modal {
+  grid-area: main-right;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  background-color: lightgray;
+  opacity: 0.9;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.board {
+  flex: 1 0 auto;
+}
+
+.add-more {
+  width: fit-content;
+  align-self: end;
 }

@@ -25,11 +25,11 @@ export default function PlayRoute() {
         {data.user
           ? <>
             <div>Hello <strong>{data.user.username}</strong></div>
-            <form action="/logout" method="post">
-              <button type="submit">
-                Sign Out
-              </button>
-            </form>
+            <p>
+              <form action="/logout" method="post">
+                <button type="submit">Sign Out</button>
+              </form>
+            </p>
           </>
           : <Link to="/login">Sign in to save progress</Link>
         }
