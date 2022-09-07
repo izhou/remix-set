@@ -1,18 +1,3 @@
-export interface PuzzleGameState {
-  numSolutions: number,
-  errorMessage?:string,
-  history: Array<string>
-  isEnded: boolean,
-}
-
-export interface StandardGameState {
-  currentCards: Array<CardData | null>,
-  deck: Array<CardData>,
-  isEnded: boolean,
-  tableEntries: Array<Set>,
-  errorMessage?: string
-}
-
 export enum CardNumbers {
   One=1,
   Two,

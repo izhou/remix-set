@@ -53,6 +53,7 @@ export default class Game extends React.Component<GameProps, GameState> {
     if (activeCards.length !== 3) return this.setState({ activeCardsIndex });
 
     // There are three cards that are not a set 
+
     if (!validateSet(activeCards as Set )) return this.handleInvalidSet();
 
     return this.setState({

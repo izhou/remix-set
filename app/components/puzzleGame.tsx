@@ -2,7 +2,15 @@ import React from "react";
 import Game from "./game";
 import Table from "./table";
 import { findSets } from "~/utils/cards"
-import { CardData, Set, PuzzleGameState } from "../utils/types";
+import { CardData, Set } from "../utils/types";
+
+type PuzzleGameState = {
+  numSolutions: number,
+  errorMessage?: string,
+  history: Array<string>
+  isEnded: boolean,
+  time?: number,
+}
 
 type PuzzleGameProps = {
   currentCards: Array<CardData>
@@ -89,14 +97,15 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
         </div>
 
         {this.state.isEnded && 
-          <div className="end-modal">
+          <div className="modal end-modal">
             <div></div>
             <div>
               <h1>Congratulations!</h1>
               <p>You've found all the possible sets.</p>
             </div>
             <p><button onClick={() => { this.deleteHistory() }}>Restart</button></p>
-          </div>}
+          </div>
+        }
       </>
     )
   }

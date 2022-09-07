@@ -35,8 +35,8 @@ body {
 
 .card-container--active {
   transform: scale(1.03);
-  background-color: #fffaf5;
-  border-color: #d7b88f;
+  background-color: #fff1e3;
+  border-color: #d59949;
 }
 
 .no-card {
@@ -161,23 +161,31 @@ body {
     "footer-left footer-right";
 }
 
-.end-modal {
-  grid-area: main-right;
-  z-index: 1;
+.modal {
+  background-color: lightgray;
   height: 100%;
   width: 100%;
-  background-color: lightgray;
-  opacity: 0.9;
+  z-index: 1;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
+.end-modal {
+  grid-area: main-right;
+  opacity: 0.9;
+}
+
+.paused-modal {
+  grid-area: main-left;
+}
+
 .board {
   flex: 1 0 auto;
 }
 
+.pause, 
 .add-more {
   width: fit-content;
   align-self: end;

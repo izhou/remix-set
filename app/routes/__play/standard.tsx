@@ -6,11 +6,11 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
 }
 
-export default function SetRoute() {
+export default function StandardRoute() {
   return (
     <>
       <div className="grid-header-left">
-        <h1>Set: Daily Puzzle</h1>
+        <h1>Set: Standard Game</h1>
       </div>
 
       <StandardGame />

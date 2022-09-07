@@ -24,11 +24,9 @@ export default function IndexRoute() {
         <div>{user && `Welcome ${user.username}`}</div>
         <nav>
           <ul>
-            <li>
-              <Link to="game">Instructions</Link>
-              <Link to="standard">Standard Game</Link>
-              <Link to="daily">Daily Puzzle</Link>
-            </li>
+              <li><Link to="game">Instructions</Link></li>
+              <li><Link to="standard">Standard Game</Link></li>
+              <li><Link to="daily">Daily Puzzle</Link></li>
           </ul>
         </nav>
       </div>
