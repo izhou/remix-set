@@ -3,6 +3,7 @@ export interface PuzzleGameState {
   isEnded: boolean,
   numSolutions: number,
   errorMessage?:string,
+  history: Array<string>
 }
 
 export interface StandardGameState {
