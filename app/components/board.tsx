@@ -51,7 +51,7 @@ export default class Board extends React.Component<boardProps> {
           )}
         </div>
 
-        <p className="error-message">{this.props.errorMessage || <>&nbsp;</>}</p>
+        <div className="error-message">{this.props.errorMessage || <>&nbsp;</>}</div>
       </div>
     )
   }

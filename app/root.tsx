@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction, LinksFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -7,6 +7,12 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+
+import stylesUrl from "~/styles/global.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: stylesUrl }];
+}
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -22,7 +28,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <div className="grid-container"><Outlet /></div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

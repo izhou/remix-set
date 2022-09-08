@@ -2,8 +2,7 @@
 import { useState } from 'react'
 import { FormField } from '~/components/formField'
 import { ActionFunction, json, LoaderFunction, redirect } from '@remix-run/node'
-// import { login, register, getUser } from '~/utils/auth.server'
-import { useActionData } from '@remix-run/react'
+import { useActionData, Link } from '@remix-run/react'
 import { createUser } from '~/utils/auth.server';
 
 type ActionData = {
@@ -88,8 +87,8 @@ export default function Login() {
   }
 
   return (
-    <div>
-      <div>
+    <>
+      <div className="grid-main-center">
         {/* Form Switcher Button */}
         <button
           onClick={() => setAction(action == 'login' ? 'register' : 'login')}
@@ -97,25 +96,28 @@ export default function Login() {
         <h2>Remix-Set</h2>
         <p>{action === 'login' ? 'Sign in' : 'Sign up'} to save your progress!</p>
         <form method="post">
-          <FormField
+          <p><FormField
             htmlFor="username"
             label="Username"
             value={formData.username}
             onChange={e => handleInputChange(e, 'username')}
-          />
-          <FormField
+          /></p>
+          <p><FormField
             htmlFor="password"
             type="password"
             label="Password"
             value={formData.password}
             onChange={e => handleInputChange(e, 'password')}
-          />
+          /></p>
 
-            <button type="submit" name="_action" value={action}>
-              { action === 'login' ? "Sign In" : "Sign Up" }
-            </button>
+          <button type="submit" name="_action" value={action}>
+            { action === 'login' ? "Sign In" : "Sign Up" }
+          </button>
         </form>
       </div>
-    </div>
+      <div className="grid-footer-left">
+        <Link to="/">{`< Home`}</Link>
+      </div>
+    </>
   )
 }

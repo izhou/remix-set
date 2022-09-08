@@ -36,7 +36,7 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
 
   componentDidMount() {
     this.setState((state) => {
-      let shuffled = shuffleCards(state.deck).splice(0,15);
+      let shuffled = shuffleCards(state.deck);
       let currentCards = shuffled.splice(0, 12);
 
       return {
@@ -90,13 +90,6 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
       sets,
     }, this.maybeEndGame);
   }
-
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => getTime(deadline), 1000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
 
   addCards() {
     let deck = this.state.deck;
@@ -162,14 +155,13 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
             <p className="add-more">Stuck? <button onClick={() => { this.addCards() }}>Add more cards</button></p>}
         </div>
 
-        {this.state.paused && <div className="modal paused-modal"><p>PAUSED</p></div>}
+        {this.state.paused && <div className="modal paused-modal"><h1>PAUSED</h1></div>}
 
         <div className="grid-footer-right">
           {!this.state.isEnded && <p className="pause"><button onClick={() => { this.togglePause() }}>{this.state.paused ? 'Unpause' : 'Pause'}</button></p>}
           <div>Time: <Timer paused={this.state.paused || this.state.isEnded} ref={this.timerRef} /></div>
           <div>Sets found: {this.state.sets.length}</div>
           <div>Cards left in deck: {this.state.deck.length}</div>
-
         </div>
 
         <div className="grid-main-right">
