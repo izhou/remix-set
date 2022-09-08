@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { FormField } from '~/components/formField'
 import { ActionFunction, json, LoaderFunction, redirect } from '@remix-run/node'
 import { useActionData, Link } from '@remix-run/react'
-import { createUser } from '~/utils/auth.server';
+import { createUser, login } from '~/utils/auth.server';
 
 type ActionData = {
-  formError?: string;
+  error?: string;
   fieldErrors?: {
     username: string | undefined;
     password: string | undefined;
@@ -46,7 +46,7 @@ export const action: ActionFunction = async({request}) => {
     typeof action !== "string" ||
     typeof username !== "string" ||
     typeof password !== "string"
-  ) return badRequest({ formError: `Form not submitted correctly.`});
+  ) return badRequest({ error: `Form not submitted correctly.`});
 
   const fields = {action, username, password};
   const fieldErrors = {
@@ -62,12 +62,12 @@ export const action: ActionFunction = async({request}) => {
       return createUser({ username, password });
     }
     case "login":
+      return login({username, password });
     default: {
       // login to get the user
-      // if there's no user, return the fields and a formError
       return badRequest({
         fields,
-        formError: "Not implemented",
+        error: "Not implemented",
       });
     }
   }
@@ -75,45 +75,65 @@ export const action: ActionFunction = async({request}) => {
 
 export default function Login() {
   const actionData = useActionData()
-  const [action, setAction] = useState('login')
+  const [action, setAction] = useState('login');
   const [formData, setFormData] = useState({
     username: actionData?.fields?.username || '',
     password: actionData?.fields?.password || '',
-  })
+  });
+
+  const [errors, setErrors] = useState({
+    username: actionData?.fieldErrors?.username || '',
+    password: actionData?.fieldErrors?.password || '',
+    form: actionData?.error || '',
+  });
 
   // Updates the form data when an input changes
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
-    setFormData(form => ({ ...form, [field]: event.target.value }))
+    setFormData(form => ({ ...form, [field]: event.target.value }));
+    setErrors(errors => ({...errors, [field]: undefined, "form": undefined }) );
   }
 
   return (
     <>
+      <div className="grid-header-right"></div>
       <div className="grid-main-center">
         {/* Form Switcher Button */}
-        <button
-          onClick={() => setAction(action == 'login' ? 'register' : 'login')}
-        >{action === 'login' ? 'Sign Up' : 'Sign In'}</button>
-        <h2>Remix-Set</h2>
-        <p>{action === 'login' ? 'Sign in' : 'Sign up'} to save your progress!</p>
-        <form method="post">
-          <p><FormField
+        
+        <h1>{action === 'login' ? "Sign In" : "Sign Up"}</h1>
+        <form method="post" className="form">
+          <FormField
             htmlFor="username"
             label="Username"
             value={formData.username}
             onChange={e => handleInputChange(e, 'username')}
-          /></p>
-          <p><FormField
+            error={errors?.username}
+          />
+          <FormField
             htmlFor="password"
             type="password"
             label="Password"
             value={formData.password}
             onChange={e => handleInputChange(e, 'password')}
-          /></p>
+            error={errors?.password}
+          />
 
           <button type="submit" name="_action" value={action}>
             { action === 'login' ? "Sign In" : "Sign Up" }
           </button>
         </form>
+
+        <div className="form-error">
+          &nbsp;{errors?.form || ''}
+        </div>
+        {action === 'login'
+          ? <div>Don't have an account yet? &nbsp;
+            <button onClick={() => setAction('register')}>Create one</button>
+          </div>
+          : <div>Already have an account? &nbsp;
+            <button onClick={() => setAction('login')}>Sign in</button>
+          </div>
+        }
+
       </div>
       <div className="grid-footer-left">
         <Link to="/">{`< Home`}</Link>

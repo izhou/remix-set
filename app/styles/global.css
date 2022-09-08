@@ -1,3 +1,10 @@
+:root {
+  --background-orange: #fff1e3;
+  --orange: #d59949;
+  --red: #cd5c5c;
+  --green: #755B7B;
+  --blue: #64a18d;
+}
 .login {
   justify-content: flex-start;
 }
@@ -47,6 +54,7 @@ body {
 
 .grid-main-center {
   grid-column: main-left/main-right;
+  text-align: center;
   justify-self: center;
 }
 
@@ -106,8 +114,8 @@ body {
 
 .card-container--active {
   transform: scale(1.03);
-  background-color: #fff1e3;
-  border-color: #d59949;
+  background-color: var(--background-orange);
+  border-color: var(--orange);
 }
 
 .no-card {
@@ -128,13 +136,26 @@ body {
 }
 
 .symbol--green {
-  color: #755B7B;
+  color: var(--green);
 }
 
 .symbol--red {
-  color: #cd5c5c;
+  color: var(--red);
 }
 
 .symbol--blue {
-  color: #64a18d
+  color: var(--blue);
+}
+
+.form {
+  padding: 1rem;
+}
+
+.form-error {
+  color: var(--red);
+}
+
+.form-field--error {
+  border-color: var(--red);
+  background-color: var(--background-orange);
 }
