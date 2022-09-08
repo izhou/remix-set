@@ -7,14 +7,14 @@ import { CardData, Set, SetIndex } from "../utils/types";
 type PuzzleGameState = {
   numSolutions: number,
   errorMessage?: string,
-  history: Array<string>
+  history: Array<SetIndex>
   isEnded: boolean,
   time?: number,
 }
 
 type PuzzleGameProps = {
   currentCards: Array<CardData>
-  history: Array<string>
+  history: Array<SetIndex>
   updateHistory?: Function
   deleteHistory?: Function
 }
@@ -34,28 +34,28 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
     };
   }
 
-  handleValidSet(activeCards: Array<Set>, activeCardsIndex: Array<SetIndex>) {
-    // Hack for easy string comparison for uniqueness
-    let formattedIndex = JSON.stringify(activeCardsIndex.sort());
+  handleValidSet(activeCards: Set, activeCardsIndex: SetIndex) {
+    let sortedIndex = activeCardsIndex.sort();
     let history = [...this.state.history];
 
-    if (history.includes(formattedIndex)) {
-      return this.showError(`This set has already been found.`);
-    }
+    let stringified = JSON.stringify(sortedIndex);
+    history.forEach((setIndex) => {
+    // Hack for easy string comparison for uniqueness
+      if (JSON.stringify(setIndex) == stringified) return this.showError(`This set has already been found.`);
+    });
 
-    history.push(formattedIndex);
+    history.push(sortedIndex);
 
     let isEnded = history.length == this.state.numSolutions
     this.setState({ history, isEnded });
     
-    if (this.props.updateHistory) this.props.updateHistory(formattedIndex);
+    if (this.props.updateHistory) this.props.updateHistory(JSON.stringify(sortedIndex));
   }
 
   buildTableEntries():Array<Set> {
     let currentCards = this.props.currentCards;
-    return this.state.history.map((cardIndexes:string) => {
-      let indexes = JSON.parse(cardIndexes);
-      return indexes.map((index:number)=> currentCards[index]);
+    return this.state.history.map((indexes) => {
+      return indexes.map((index) => currentCards[index]) as Set;
     });
   }
 
@@ -84,7 +84,7 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
           <p>Find all possible sets in the below 12 cards.</p>
           <Game
             currentCards={this.props.currentCards}
-            handleValidSet={(activeCards: Array<Set>, activeCardsIndex: Array<SetIndex>) => this.handleValidSet(activeCards, activeCardsIndex)}
+            handleValidSet={(activeCards: Set, activeCardsIndex: SetIndex) => this.handleValidSet(activeCards, activeCardsIndex)}
             showError={(message: string) => this.showError(message)}
             errorMessage={this.state.errorMessage}
             isEnded={this.state.isEnded}

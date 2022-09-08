@@ -31,7 +31,7 @@ model DailyPuzzleHistory {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   userId        String
   puzzleDate    String
-  foundSets     String[]
+  foundSets     Json[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)

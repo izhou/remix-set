@@ -4,7 +4,7 @@ import { json } from "@remix-run/node";
 
 import type { DailyPuzzle, DailyPuzzleHistory } from "@prisma/client";
 import { useLoaderData, useFetcher } from "@remix-run/react";
-import { CardData } from "~/utils/types";
+import { CardData, SetIndex } from "~/utils/types";
 
 import { db } from "~/utils/db.server";
 import { getUserId } from "~/utils/auth.server";
@@ -63,12 +63,14 @@ export default function DailyPuzzlesRoute() {
     );
   }: undefined;
 
+  let history = data.history?.foundSets.map((index) => JSON.parse(index) as SetIndex) || [];
+
   return (
       <PuzzleGame 
         currentCards={JSON.parse(data.puzzle.cards)}
         updateHistory={updateHistory}
         deleteHistory={deleteHistory}
-        history={data.history?.foundSets || []}
+        history={history}
       />
   );
 }
