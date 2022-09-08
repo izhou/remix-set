@@ -35,7 +35,7 @@ export default class Game extends React.Component<GameProps, GameState> {
   handleClick(index:number) {
     if (this.props.isEnded) return;
 
-    let activeCardsIndex = this.state.activeCardsIndex;
+    let activeCardsIndex = [...this.state.activeCardsIndex];
 
     // Toggle active card on or off.
     activeCardsIndex = activeCardsIndex.includes(index)

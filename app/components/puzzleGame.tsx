@@ -2,7 +2,7 @@ import React from "react";
 import Game from "./game";
 import Table from "./table";
 import { findSets } from "~/utils/cards"
-import { CardData, Set } from "../utils/types";
+import { CardData, Set, SetIndex } from "../utils/types";
 
 type PuzzleGameState = {
   numSolutions: number,
@@ -24,7 +24,7 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
     super(props)
 
     let numSolutions = findSets(this.props.currentCards).length;
-    let history = this.props.history;
+    let history = [...this.props.history];
     let isEnded = history.length == numSolutions;
 
     this.state = {
@@ -34,10 +34,10 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
     };
   }
 
-  handleValidSet(activeCards: Array<CardData>, activeCardsIndex: Array<number>) {
+  handleValidSet(activeCards: Array<Set>, activeCardsIndex: Array<SetIndex>) {
     // Hack for easy string comparison for uniqueness
     let formattedIndex = JSON.stringify(activeCardsIndex.sort());
-    let history = this.state.history;
+    let history = [...this.state.history];
 
     if (history.includes(formattedIndex)) {
       return this.showError(`This set has already been found.`);
@@ -84,7 +84,7 @@ export default class PuzzleGame extends React.Component<PuzzleGameProps, PuzzleG
           <p>Find all possible sets in the below 12 cards.</p>
           <Game
             currentCards={this.props.currentCards}
-            handleValidSet={(activeCards: Array<CardData>, activeCardsIndex: Array<number>) => this.handleValidSet(activeCards, activeCardsIndex)}
+            handleValidSet={(activeCards: Array<Set>, activeCardsIndex: Array<SetIndex>) => this.handleValidSet(activeCards, activeCardsIndex)}
             showError={(message: string) => this.showError(message)}
             errorMessage={this.state.errorMessage}
             isEnded={this.state.isEnded}

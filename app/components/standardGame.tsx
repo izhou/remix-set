@@ -55,10 +55,10 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
     });
   }
 
-  handleValidSet(activeCards:Set, activeCardsIndex: [number,number,number]) {
-    let deck = this.state.deck;
-    let currentCards = this.state.currentCards;
-    let sets = this.state.sets;
+  handleValidSet(activeCards:Set, activeCardsIndex: SetIndex) {
+    let deck = [...this.state.deck];
+    let sets = [...this.state.sets];
+    let currentCards = [...this.state.currentCards];
     let newLength = Math.max(currentCards.length - 3, 12);
 
     sets.push(activeCards);
@@ -92,8 +92,8 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
   }
 
   addCards() {
-    let deck = this.state.deck;
-    let currentCards = this.state.currentCards;
+    let deck = [...this.state.deck];
+    let currentCards = [...this.state.currentCards];
 
     if (currentCards.length >= 18) return this.showError(`There are already enough cards on the table!`);
 
