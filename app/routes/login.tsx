@@ -1,5 +1,5 @@
 // login.tsx
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormField } from '~/components/formField'
 import { ActionFunction, json, LoaderFunction, redirect } from '@remix-run/node'
 import { useActionData, Link } from '@remix-run/react'
@@ -93,6 +93,11 @@ export default function Login() {
     setErrors(errors => ({...errors, [field]: undefined, "form": undefined }) );
   }
 
+  const handleActionChange = (action: string) => {
+    setAction(action);
+    setErrors({...errors, form: undefined});
+  }
+
   return (
     <>
       <div className="grid-header-right"></div>
@@ -127,10 +132,10 @@ export default function Login() {
         </div>
         {action === 'login'
           ? <div>Don't have an account yet? &nbsp;
-            <button onClick={() => setAction('register')}>Create one</button>
+            <button onClick={() => handleActionChange('register')}>Create one</button>
           </div>
           : <div>Already have an account? &nbsp;
-            <button onClick={() => setAction('login')}>Sign in</button>
+            <button onClick={() => handleActionChange('login')}>Sign in</button>
           </div>
         }
 
