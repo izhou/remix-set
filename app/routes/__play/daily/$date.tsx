@@ -63,7 +63,7 @@ export default function DailyPuzzlesRoute() {
     );
   }: undefined;
 
-  let history = data.history?.foundSets.map((index) => JSON.parse(index) as SetIndex) || [];
+  let history = data.history?.foundSets ? data.history?.foundSets.map((index) => JSON.parse(index) as SetIndex) : [];
 
   return (
       <PuzzleGame 

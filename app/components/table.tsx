@@ -17,15 +17,15 @@ export default function Table(props: TableProps) {
 
   return (
     entries.length ? <>
-      <strong className="table--title"><p>{props.title}</p></strong>
+      <strong className="table-title"><p>{props.title}</p></strong>
       <div className="table-container">
         <div className="table">
           {entries.map((entry, index) => (
-            <div className="table--row" key={index}>
+            <div className="table-row" key={index}>
               {entry.map((card, i) => <Card data={card} key={i} />)}
             </div>
           ))}
-          <div className="table--row"></div>
+          <div className="table-row"></div>
         </div>
       </div>
     </> : <></>
