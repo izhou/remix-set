@@ -57,12 +57,10 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
 
   handleValidSet(activeCards:Set, activeCardsIndex: SetIndex) {
     let deck = [...this.state.deck];
-    let sets = [...this.state.sets];
     let currentCards = [...this.state.currentCards];
     let newLength = Math.max(currentCards.length - 3, 12);
 
-    sets.push(activeCards);
-
+    let sets = [activeCards].concat(this.state.sets);
     if (newLength == currentCards.length) {
       activeCardsIndex.forEach((index) => {
         currentCards[index] = deck.pop() || null;
@@ -174,8 +172,6 @@ export default class StandardGame extends React.Component<{}, StandardGameState>
             <div>
               <h1>Congratulations!</h1>
               <p>You've found all the possible sets in {this.state.time}</p>
-              <p>See how you did against others: </p>
-              <button>Save time</button>
             </div>
             <p><button onClick={() => {this.startNewGame()}}>Play again</button></p>
           </div>
