@@ -54,7 +54,6 @@ body {
 
 .grid-main-center {
   grid-column: main-left/main-right;
-  text-align: center;
   justify-self: center;
 }
 

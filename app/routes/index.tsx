@@ -52,7 +52,7 @@ export default function IndexRoute() {
         <div className="game-link"><Link to="daily">Daily Puzzle</Link></div>
 
         <br/>
-        <div><Link to="game">Instructions</Link></div>
+        <div><Link to="instructions">Instructions</Link></div>
 
       </div>
     </>

@@ -28,6 +28,20 @@ export default function App() {
         <Links />
       </head>
       <body>
+        {/* Generates SVG definitions needed to create stripey symbols */}
+        <svg className="svg-defs">
+          <defs>
+            <pattern id="pattern-stripe"
+              width="6" height="1"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width="2" height="1" fill="white"></rect>
+            </pattern>
+            <mask id="mask-stripe">
+              <rect x="0" y="0" width="200" height="100" fill="url(#pattern-stripe)" />
+            </mask>
+          </defs>
+        </svg>
         <div className="grid-container"><Outlet /></div>
         <ScrollRestoration />
         <Scripts />

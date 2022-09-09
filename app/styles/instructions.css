@@ -1,0 +1,12 @@
+.examples-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+.example-cards {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100px;
+}
