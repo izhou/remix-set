@@ -5,18 +5,15 @@ import { getUserId } from "~/utils/auth.server";
 export const action: ActionFunction = async ({ request }) => {
   const userId = await getUserId(request);
   if (!userId)
-    return json(
-      { error: `User must be signed in.`},
-      { status: 400 }
-    );
+    return json({ error: `User must be signed in.` }, { status: 400 });
 
   const form = await request.formData();
 
-  let puzzleDate = form.get('date');
-  let foundSet = form.get('foundSet');
+  let puzzleDate = form.get("date");
+  let foundSet = form.get("foundSet");
 
-  if (typeof puzzleDate !== "string" || typeof foundSet !=="string") {
-    return json( form, {status: 400});
+  if (typeof puzzleDate !== "string" || typeof foundSet !== "string") {
+    return json(form, { status: 400 });
   }
 
   const puzzleHistory = await db.dailyPuzzleHistory.upsert({
@@ -25,9 +22,9 @@ export const action: ActionFunction = async ({ request }) => {
     create: {
       userId,
       puzzleDate,
-      foundSets: foundSet
+      foundSets: foundSet,
     },
-  })
+  });
 
   return json(puzzleHistory);
 };

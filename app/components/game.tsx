@@ -5,15 +5,15 @@ import { CardData, Set } from "~/utils/types";
 import { validateSet } from "~/utils/cards";
 
 type GameState = {
-  activeCardsIndex: Array<number>,
+  activeCardsIndex: Array<number>;
 };
 
 type GameProps = {
-  currentCards: Array<CardData | null>,
-  handleValidSet: Function
-  isEnded: boolean,
-  showError: Function,
-  errorMessage?: string,
+  currentCards: Array<CardData | null>;
+  handleValidSet: Function;
+  isEnded: boolean;
+  showError: Function;
+  errorMessage?: string;
 };
 
 export default class Game extends React.Component<GameProps, GameState> {
@@ -22,7 +22,7 @@ export default class Game extends React.Component<GameProps, GameState> {
 
     this.state = {
       activeCardsIndex: [],
-    }
+    };
   }
 
   handleInvalidSet() {
@@ -30,9 +30,9 @@ export default class Game extends React.Component<GameProps, GameState> {
     return this.setState({
       activeCardsIndex: [],
     });
-  };
+  }
 
-  handleClick(index:number) {
+  handleClick(index: number) {
     if (this.props.isEnded) return;
 
     let activeCardsIndex = [...this.state.activeCardsIndex];
@@ -52,23 +52,28 @@ export default class Game extends React.Component<GameProps, GameState> {
     // There are not three active cards yet, set active card state and continue.
     if (activeCards.length !== 3) return this.setState({ activeCardsIndex });
 
-    // There are three cards that are not a set 
+    // There are three cards that are not a set
 
-    if (!validateSet(activeCards as Set )) return this.handleInvalidSet();
+    if (!validateSet(activeCards as Set)) return this.handleInvalidSet();
 
-    return this.setState({
-      activeCardsIndex: []
-    }, this.props.handleValidSet(activeCards, activeCardsIndex));
+    return this.setState(
+      {
+        activeCardsIndex: [],
+      },
+      this.props.handleValidSet(activeCards, activeCardsIndex)
+    );
   }
 
   render() {
     return (
-        <Board
-          cards={this.props.currentCards}
-          activeCardsIndex={this.state.activeCardsIndex}
-          onClick={(i: number) => { this.handleClick(i) }}
-          errorMessage={this.props.errorMessage}
-        />
+      <Board
+        cards={this.props.currentCards}
+        activeCardsIndex={this.state.activeCardsIndex}
+        onClick={(i: number) => {
+          this.handleClick(i);
+        }}
+        errorMessage={this.props.errorMessage}
+      />
     );
   }
 }

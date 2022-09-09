@@ -1,10 +1,10 @@
-import StandardGame from "~/components/standardGame" 
+import StandardGame from "~/components/standardGame";
 import { LinksFunction } from "@remix-run/node";
 
 import stylesUrl from "~/styles/game.css";
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
-}
+};
 
 export default function StandardRoute() {
   return (

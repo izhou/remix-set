@@ -1,17 +1,17 @@
-import React, { Component } from 'react'; 
+import React, { Component } from "react";
 
 type ClockProps = {
   // startTime: number,
-  paused: boolean,
-  ref: React.RefObject<unknown>
+  paused: boolean;
+  ref: React.RefObject<unknown>;
 };
 
 type ClockState = {
-  pausedTime: number,
-  totalTime: number,
-  timerStart?: number
-  interval?: NodeJS.Timer,
-}
+  pausedTime: number;
+  totalTime: number;
+  timerStart?: number;
+  interval?: NodeJS.Timer;
+};
 export default class Clock extends React.Component<ClockProps, ClockState> {
   constructor(props: any) {
     super(props);
@@ -21,15 +21,13 @@ export default class Clock extends React.Component<ClockProps, ClockState> {
       pausedTime: 0,
       totalTime: 0,
       interval: undefined,
-    }
+    };
   }
 
   componentDidMount() {
     this.setState({
       timerStart: Date.now(),
-      interval: setInterval(() =>
-        this.updateClock(),
-        1000 )
+      interval: setInterval(() => this.updateClock(), 1000),
     });
   }
 
@@ -44,9 +42,7 @@ export default class Clock extends React.Component<ClockProps, ClockState> {
       } else {
         this.setState({
           timerStart: Date.now(),
-          interval: setInterval(() =>
-            this.updateClock(),
-            1000)
+          interval: setInterval(() => this.updateClock(), 1000),
         });
       }
     }
@@ -54,7 +50,9 @@ export default class Clock extends React.Component<ClockProps, ClockState> {
 
   //This section clears setInterval by calling intervalID so as to optimise memory
   componentWillUnmount() {
-    if (this.state.interval) {clearInterval(this.state.interval)};
+    if (this.state.interval) {
+      clearInterval(this.state.interval);
+    }
   }
 
   //This function set the state of the time to a new time
@@ -62,7 +60,7 @@ export default class Clock extends React.Component<ClockProps, ClockState> {
     let timerStart = this.state.timerStart || 0;
 
     this.setState({
-      totalTime: Date.now() - timerStart + this.state.pausedTime
+      totalTime: Date.now() - timerStart + this.state.pausedTime,
     });
   }
 
@@ -71,6 +69,6 @@ export default class Clock extends React.Component<ClockProps, ClockState> {
   }
 
   render() {
-    return (<>{this.getFormattedTime()}</>);
+    return <>{this.getFormattedTime()}</>;
   }
 }

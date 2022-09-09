@@ -1,25 +1,25 @@
 export enum CardNumbers {
-  One=1,
+  One = 1,
   Two,
-  Three
+  Three,
 }
 
 export enum CardShapes {
-  Squiggle="squiggle",
-  Oval="oval",
-  Diamond="diamond"
+  Squiggle = "squiggle",
+  Oval = "oval",
+  Diamond = "diamond",
 }
 
 export enum CardFills {
-  Solid="solid",
-  Empty="empty",
-  Striped="striped",
+  Solid = "solid",
+  Empty = "empty",
+  Striped = "striped",
 }
 
 export enum CardColors {
-  Red="red",
-  Green="green",
-  Blue="blue"
+  Red = "red",
+  Green = "green",
+  Blue = "blue",
 }
 
 export interface CardData {

@@ -8,9 +8,9 @@ if (!sessionSecret) {
 }
 
 export type UserForm = {
-  username: string
-  password: string
-}
+  username: string;
+  password: string;
+};
 
 const storage = createCookieSessionStorage({
   cookie: {
@@ -68,7 +68,6 @@ export async function createUser(user: UserForm) {
   return createUserSession(newUser.id, "/");
 }
 
-
 // Validate the user on username & password
 export async function login({ username, password }: UserForm) {
   const user = await db.user.findUnique({
@@ -76,7 +75,8 @@ export async function login({ username, password }: UserForm) {
   });
 
   if (!user) return json({ error: `User does not exist` }, { status: 400 });
-  if (!(await bcrypt.compare(password, user.password))) return json({ error: `Incorrect login` }, { status: 400 });
+  if (!(await bcrypt.compare(password, user.password)))
+    return json({ error: `Incorrect login` }, { status: 400 });
 
   return createUserSession(user.id, "/");
 }
@@ -96,7 +96,7 @@ export async function getUser(request: Request) {
 
   try {
     const user = await db.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     return user;
