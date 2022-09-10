@@ -7,7 +7,6 @@ import { CardData, Set, SetIndex } from "../utils/types";
 type PuzzleGameState = {
   numSolutions: number;
   errorMessage?: string;
-  history: Array<SetIndex>;
   isEnded: boolean;
   time?: number;
 };
@@ -15,8 +14,7 @@ type PuzzleGameState = {
 type PuzzleGameProps = {
   currentCards: Array<CardData>;
   history: Array<SetIndex>;
-  updateHistory?: Function;
-  deleteHistory?: Function;
+  updateHistory: Function;
 };
 
 export default class PuzzleGame extends React.Component<
@@ -32,34 +30,31 @@ export default class PuzzleGame extends React.Component<
 
     this.state = {
       numSolutions,
-      history,
       isEnded,
     };
   }
 
   handleValidSet(activeCards: Set, activeCardsIndex: SetIndex) {
     let sortedIndex = activeCardsIndex.sort();
-    let history = [...this.state.history];
+    let history = [...this.props.history];
 
     let stringified = JSON.stringify(sortedIndex);
-    history.forEach((setIndex) => {
-      // Hack for easy string comparison for uniqueness
+    for (const setIndex of history) {
       if (JSON.stringify(setIndex) == stringified)
         return this.showError(`This set has already been found.`);
-    });
+    }
 
     history.push(sortedIndex);
 
     let isEnded = history.length == this.state.numSolutions;
-    this.setState({ history, isEnded });
+    this.setState({ isEnded });
 
-    if (this.props.updateHistory)
-      this.props.updateHistory(JSON.stringify(sortedIndex));
+    this.props.updateHistory(history);
   }
 
   buildTableEntries(): Array<Set> {
     let currentCards = this.props.currentCards;
-    return this.state.history.map((indexes) => {
+    return this.props.history.map((indexes) => {
       return indexes.map((index) => currentCards[index]) as Set;
     });
   }
@@ -75,11 +70,10 @@ export default class PuzzleGame extends React.Component<
 
   deleteHistory() {
     this.setState({
-      history: [],
       isEnded: false,
     });
 
-    if (this.props.deleteHistory) this.props.deleteHistory();
+    this.props.updateHistory([]);
   }
 
   render() {
@@ -104,7 +98,7 @@ export default class PuzzleGame extends React.Component<
             length={this.state.numSolutions}
             title="Solutions"
           />
-          {!!this.state.history.length && (
+          {!!this.props.history.length && (
             <p>
               <button
                 onClick={() => {
