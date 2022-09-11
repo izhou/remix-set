@@ -50,26 +50,32 @@ export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
   const fetcher = useFetcher();
 
-  const updateHistory = async (history: SetIndex[]) => {
-    let stringified_history = JSON.stringify(history);
+  const updateHistory = async (foundSets: SetIndex[]) => {
+    let stringifiedSets = JSON.stringify(foundSets);
 
     fetcher.submit(
-      { date: data.puzzle.date, history: stringified_history },
+      { date: data.puzzle.date, foundSets: stringifiedSets },
       { method: "post", action: "/daily/update-history" }
     );
   };
 
-  let history = fetcher.submission
-    ? JSON.parse(fetcher.submission.formData.get("history") as string)
-    : fetcher.data?.foundSets.map(
-        (index: string) => JSON.parse(index) as SetIndex
-      ) || [];
+  let foundSets: Array<SetIndex> = [];
+
+  if (fetcher.submission) {
+    foundSets = JSON.parse(
+      fetcher.submission.formData.get("foundSets") as string
+    );
+  } else {
+    let stringifedSets = data?.history?.foundSets || fetcher.data?.foundSets;
+    if (stringifedSets)
+      foundSets = stringifedSets.map((index) => JSON.parse(index) as SetIndex);
+  }
 
   return (
     <PuzzleGame
       currentCards={JSON.parse(data.puzzle.cards)}
       updateHistory={updateHistory}
-      history={history}
+      foundSets={foundSets}
     />
   );
 }

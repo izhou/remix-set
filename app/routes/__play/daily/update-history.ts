@@ -7,27 +7,24 @@ export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
 
   let puzzleDate = form.get("date");
-  let stringifiedHistory = form.get("history");
+  let stringifiedSets = form.get("foundSets");
 
-  if (
-    typeof puzzleDate !== "string" ||
-    typeof stringifiedHistory !== "string"
-  ) {
+  if (typeof puzzleDate !== "string" || typeof stringifiedSets !== "string") {
     return json(form, { status: 400 });
   }
-  let history: Array<SetIndex> = JSON.parse(stringifiedHistory);
-  let parsedHistory = history.map((index) => JSON.stringify(index));
+  let foundSets: Array<SetIndex> = JSON.parse(stringifiedSets);
+  let parsedSets = foundSets.map((index) => JSON.stringify(index));
 
   const userId = await getUserId(request);
-  if (!userId) return json({ foundSets: parsedHistory });
+  if (!userId) return json({ foundSets: parsedSets });
 
   const puzzleHistory = await db.dailyPuzzleHistory.upsert({
     where: { userId_puzzleDate: { puzzleDate, userId } },
-    update: { foundSets: parsedHistory },
+    update: { foundSets: parsedSets },
     create: {
       userId,
       puzzleDate,
-      foundSets: parsedHistory,
+      foundSets: parsedSets,
     },
   });
 
