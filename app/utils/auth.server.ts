@@ -1,4 +1,5 @@
 import { redirect, json, createCookieSessionStorage } from "@remix-run/node";
+import { getSession, commitSession, destroySession } from "~/sessions";
 import { db } from "./db.server";
 import bcrypt from "bcryptjs";
 
@@ -12,30 +13,18 @@ export type UserForm = {
   password: string;
 };
 
-const storage = createCookieSessionStorage({
-  cookie: {
-    name: "remix-set-session",
-    secure: process.env.NODE_ENV === "production",
-    secrets: [sessionSecret],
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 30,
-    httpOnly: true,
-  },
-});
-
 async function createUserSession(userId: string, redirectTo: string) {
-  const session = await storage.getSession();
+  const session = await getSession();
   session.set("userId", userId);
   return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await storage.commitSession(session),
+      "Set-Cookie": await commitSession(session),
     },
   });
 }
 
 function getUserSession(request: Request) {
-  return storage.getSession(request.headers.get("Cookie"));
+  return getSession(request.headers.get("Cookie"));
 }
 
 export async function createUser(user: UserForm) {
@@ -109,7 +98,7 @@ export async function logout(request: Request) {
   const session = await getUserSession(request);
   return redirect("/login", {
     headers: {
-      "Set-Cookie": await storage.destroySession(session),
+      "Set-Cookie": await destroySession(session),
     },
   });
 }

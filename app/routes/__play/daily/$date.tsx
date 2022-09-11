@@ -8,11 +8,13 @@ import { CardData, SetIndex } from "~/utils/types";
 
 import { db } from "~/utils/db.server";
 import { getUserId } from "~/utils/auth.server";
+import { getSession } from "~/sessions";
 
 type LoaderData = {
   puzzle: DailyPuzzle;
-  history: DailyPuzzleHistory;
+  foundSets: Array<string>;
   userId: number;
+  history: any;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -26,18 +28,27 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (!puzzle) return redirect(`/daily`);
 
   let userId = await getUserId(request);
-  let history = userId
-    ? await db.dailyPuzzleHistory.findUnique({
-        where: {
-          userId_puzzleDate: {
-            puzzleDate: params.date,
-            userId,
-          },
-        },
-      })
-    : [];
+  let foundSets: Array<string> = [];
 
-  return json({ puzzle, history, userId });
+  if (userId) {
+    let history = await db.dailyPuzzleHistory.findUnique({
+      where: {
+        userId_puzzleDate: {
+          puzzleDate: params.date,
+          userId,
+        },
+      },
+    });
+
+    if (history) foundSets = history.foundSets;
+  } else {
+    const session = await getSession(request.headers.get("Cookie"));
+    let history = session.get("history") || {};
+
+    if (history[params.date]) foundSets = history[params.date];
+  }
+
+  return json({ puzzle, foundSets, userId });
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -49,6 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
 export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
   const fetcher = useFetcher();
+  console.log(data.history);
 
   const updateHistory = async (foundSets: SetIndex[]) => {
     let stringifiedSets = JSON.stringify(foundSets);
@@ -66,7 +78,7 @@ export default function DailyPuzzlesRoute() {
       fetcher.submission.formData.get("foundSets") as string
     );
   } else {
-    let stringifedSets = data?.history?.foundSets || fetcher.data?.foundSets;
+    let stringifedSets = data?.foundSets || fetcher.data?.foundSets;
     if (stringifedSets)
       foundSets = stringifedSets.map((index) => JSON.parse(index) as SetIndex);
   }
