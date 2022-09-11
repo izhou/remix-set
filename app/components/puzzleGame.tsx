@@ -1,7 +1,7 @@
 import React from "react";
-import Game from "./game";
+import Game from "./baseGame";
 import Table from "./table";
-import { findSets } from "~/utils/cards";
+import { findSets } from "~/utils/game";
 import { CardData, Set, SetIndex } from "../utils/types";
 
 type PuzzleGameState = {
