@@ -11,10 +11,15 @@ if (!sessionSecret) {
 export type UserForm = {
   username: string;
   password: string;
+  request: Request;
 };
 
-async function createUserSession(userId: string, redirectTo: string) {
-  const session = await getSession();
+async function createUserSession(
+  userId: string,
+  redirectTo: string,
+  request: Request
+) {
+  const session = await getSession(request.headers.get("Cookie"));
   session.set("userId", userId);
   return redirect(redirectTo, {
     headers: {
@@ -54,11 +59,11 @@ export async function createUser(user: UserForm) {
     );
   }
 
-  return createUserSession(newUser.id, "/");
+  return createUserSession(newUser.id, "/", user.request);
 }
 
 // Validate the user on username & password
-export async function login({ username, password }: UserForm) {
+export async function login({ username, password, request }: UserForm) {
   const user = await db.user.findUnique({
     where: { username },
   });
@@ -67,7 +72,7 @@ export async function login({ username, password }: UserForm) {
   if (!(await bcrypt.compare(password, user.password)))
     return json({ error: `Incorrect login` }, { status: 400 });
 
-  return createUserSession(user.id, "/");
+  return createUserSession(user.id, "/", request);
 }
 
 export async function getUserId(request: Request) {

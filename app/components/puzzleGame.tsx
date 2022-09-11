@@ -15,6 +15,7 @@ type PuzzleGameProps = {
   currentCards: Array<CardData>;
   foundSets: Array<SetIndex>;
   updateHistory: Function;
+  deleteHistory: Function;
 };
 
 export default class PuzzleGame extends React.Component<
@@ -72,7 +73,7 @@ export default class PuzzleGame extends React.Component<
       isEnded: false,
     });
 
-    this.props.updateHistory([]);
+    this.props.deleteHistory();
   }
 
   render() {

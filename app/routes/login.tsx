@@ -64,10 +64,10 @@ export const action: ActionFunction = async ({ request }) => {
 
   switch (action) {
     case "register": {
-      return createUser({ username, password });
+      return createUser({ username, password, request });
     }
     case "login":
-      return login({ username, password });
+      return login({ username, password, request });
     default: {
       // login to get the user
       return badRequest({
