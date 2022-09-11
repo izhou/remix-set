@@ -2,7 +2,7 @@ import React from "react";
 import Game from "./baseGame";
 import Table from "./table";
 import { findSets } from "~/utils/game";
-import { CardData, Set, SetIndex } from "../utils/types";
+import { CardData, Set, SetIndex } from "~/utils/types";
 
 type PuzzleGameState = {
   numSolutions: number;

@@ -1,9 +1,9 @@
 :root {
   --background-orange: #fff1e3;
   --orange: #d59949;
-  --red: #cd5c5c;
-  --green: #755B7B;
-  --blue: #64a18d;
+  --red: #CC7058;
+  --green: #a0baae;
+  --blue: #9B80A1;
 }
 .login {
   justify-content: flex-start;

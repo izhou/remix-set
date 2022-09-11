@@ -2,7 +2,7 @@ import React from "react";
 import Board from "./board";
 
 import { CardData, Set } from "~/utils/types";
-import { validateSet } from "~/utils/cards";
+import { validateSet } from "~/utils/game";
 
 type GameState = {
   activeCardsIndex: Array<number>;

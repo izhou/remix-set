@@ -1,5 +1,5 @@
-import { CardData, CardFills } from "../utils/types";
-import { CardShapes } from "../utils/types";
+import { CardData, CardFills } from "~/utils/types";
+import { CardShapes } from "~/utils/types";
 
 const svgMap: Record<CardShapes, string> = {
   [CardShapes.Squiggle]:

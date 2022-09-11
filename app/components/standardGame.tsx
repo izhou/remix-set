@@ -1,8 +1,8 @@
 import React from "react";
-import Game from "./game";
+import Game from "./baseGame";
 import Table from "./table";
 import Timer from "./timer";
-import { createCompleteDeck, shuffleCards, findSets } from "~/utils/cards";
+import { createCompleteDeck, shuffleCards, findSets } from "~/utils/game";
 import { Set, SetIndex, CardData } from "../utils/types";
 
 type StandardGameState = {

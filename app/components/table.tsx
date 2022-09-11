@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./card";
-import { Set } from "../utils/types";
+import { Set } from "~/utils/types";
 
 type TableProps = {
   entries: Array<Set>;
