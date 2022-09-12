@@ -1,23 +1,14 @@
-import { User } from "@prisma/client";
-import { LoaderFunction, LinksFunction, json } from "@remix-run/node";
-import { Outlet, useLoaderData, Link } from "@remix-run/react";
-import stylesUrl from "~/styles/game.css";
-import { getUser } from "~/utils/auth.server";
+import { LoaderFunction, json } from "@remix-run/node";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: stylesUrl }];
-};
 
 type LoaderData = {
   oldestDate?: string;
   newestDate?: string;
   currentDate?: string;
-  user?: User;
 };
-export const loader: LoaderFunction = async ({ params, request }) => {
-  let user = await getUser(request);
 
+export const loader: LoaderFunction = async ({ params, request }) => {
   let oldestPuzzle = await db.dailyPuzzle.findFirst({
     orderBy: { date: "asc" },
   });
@@ -33,8 +24,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     newestDate: newestPuzzle?.date,
     currentDate,
   };
-
-  if (user) data.user = user;
 
   return json(data);
 };

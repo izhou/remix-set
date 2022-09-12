@@ -13,7 +13,6 @@ import { getSession } from "~/sessions";
 type LoaderData = {
   puzzle: DailyPuzzle;
   foundSets: Array<string>;
-  userId: number;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -50,7 +49,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       foundSets = [...new Set(foundSets.concat(dbHistory.foundSets))];
   }
 
-  return json({ puzzle, foundSets, userId });
+  return json({ puzzle, foundSets });
 };
 
 export const action: ActionFunction = async ({ request }) => {

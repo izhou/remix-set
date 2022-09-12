@@ -13,11 +13,13 @@ export const action: ActionFunction = async ({ request }) => {
   if (typeof puzzleDate !== "string" || typeof jsonSets !== "string") {
     return json(form, { status: 400 });
   }
+
   let foundSets: Array<SetIndex> = JSON.parse(jsonSets);
   let stringifiedSets = foundSets.map((index) => JSON.stringify(index));
 
   const userId = await getUserId(request);
 
+  // Check for saved history in the session.
   const session = await getSession(request.headers.get("Cookie"));
   let sessionHistory = session.get("history") || {};
 

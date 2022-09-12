@@ -1,12 +1,7 @@
 // login.tsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormField } from "~/components/formField";
-import {
-  ActionFunction,
-  json,
-  LoaderFunction,
-  redirect,
-} from "@remix-run/node";
+import { ActionFunction, json } from "@remix-run/node";
 import { useActionData, Link } from "@remix-run/react";
 import { createUser, login } from "~/utils/auth.server";
 
