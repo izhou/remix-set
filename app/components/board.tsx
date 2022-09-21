@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./card";
-import type { CardData } from "~/utils/types";
+import type { CardData } from "@prisma/client";
 
 type boardProps = {
   cards: Array<CardData | null>;

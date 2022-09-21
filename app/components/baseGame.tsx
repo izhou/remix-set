@@ -1,7 +1,8 @@
 import React from "react";
 import Board from "./board";
 
-import { CardData, Set } from "~/utils/types";
+import { CardData } from "@prisma/client";
+import { Set } from "~/utils/types";
 import { validateSet } from "~/utils/game";
 
 type GameState = {

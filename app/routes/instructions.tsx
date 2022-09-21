@@ -2,7 +2,7 @@ import { LinksFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import Card from "~/components/card";
 import instructionsStyleUrl from "~/styles/instructions.css";
-import { CardShapes, CardNumbers, CardColors, CardFills } from "~/utils/types";
+import { CardShapes, CardNumbers, CardColors, CardFills } from "@prisma/client";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: instructionsStyleUrl }];

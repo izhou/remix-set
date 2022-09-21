@@ -19,12 +19,13 @@ model DailyPuzzle {
 }
 
 model User {
-  id                   String               @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
-  username             String               @unique
-  password             String
-  dailyPuzzleHistories DailyPuzzleHistory[]
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  username              String                @unique
+  password              String
+  dailyPuzzleHistories  DailyPuzzleHistory[]
+  standardPuzzleHistory StandardPuzzleHistory
 }
 
 model DailyPuzzleHistory {
@@ -38,4 +39,40 @@ model DailyPuzzleHistory {
   puzzle     DailyPuzzle @relation(fields: [puzzleDate], references: [date], onDelete: Cascade)
 
   @@unique([userId, puzzleDate], name: "userId_puzzleDate")
+}
+
+type StandardPuzzleHistory {
+  deck         CardData[]
+  currentCards CardData[]
+}
+
+enum CardNumbers {
+  One
+  Two
+  Three
+}
+
+enum CardShapes {
+  Squiggle
+  Oval
+  Diamond
+}
+
+enum CardFills {
+  Solid
+  Empty
+  Striped
+}
+
+enum CardColors {
+  Red
+  Green
+  Blue
+}
+
+type CardData {
+  number CardNumbers
+  shape  CardShapes
+  fill   CardFills
+  color  CardColors
 }

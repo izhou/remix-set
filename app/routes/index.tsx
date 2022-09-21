@@ -4,7 +4,7 @@ import { getUser } from "~/utils/auth.server";
 import { LoginHeader } from "~/components/loginHeader";
 import indexStylesUrl from "~/styles/index.css";
 import Card from "~/components/card";
-import { CardShapes, CardNumbers, CardColors, CardFills } from "~/utils/types";
+import { CardShapes, CardNumbers, CardColors, CardFills } from "@prisma/client";
 
 export const loader: LoaderFunction = async ({ request }) => {
   let user = await getUser(request);

@@ -3,7 +3,8 @@ import Game from "./baseGame";
 import Table from "./table";
 import Timer from "./timer";
 import { createCompleteDeck, shuffleCards, findSets } from "~/utils/game";
-import { Set, SetIndex, CardData } from "../utils/types";
+import { CardData } from "@prisma/client";
+import { Set, SetIndex } from "../utils/types";
 
 type StandardGameState = {
   currentCards: Array<CardData | null>;

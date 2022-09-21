@@ -4,8 +4,8 @@ import {
   CardFills,
   CardColors,
   CardData,
-  Set,
-} from "./types";
+} from "@prisma/client";
+import { Set } from "./types";
 
 export function createCompleteDeck(): Array<CardData> {
   let deck: Array<CardData> = [];
