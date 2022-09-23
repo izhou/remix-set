@@ -14,7 +14,7 @@ type PuzzleGameState = {
 
 type PuzzleGameProps = {
   currentCards: Array<CardData>;
-  foundSets: Array<SetIndex>;
+  history: Array<SetIndex>;
   updateHistory: Function;
   deleteHistory: Function;
 };
@@ -27,7 +27,7 @@ export default class PuzzleGame extends React.Component<
     super(props);
 
     let numSolutions = findSets(this.props.currentCards).length;
-    let isEnded = this.props.foundSets.length == numSolutions;
+    let isEnded = this.props.history.length == numSolutions;
 
     this.state = {
       numSolutions,
@@ -37,25 +37,25 @@ export default class PuzzleGame extends React.Component<
 
   handleValidSet(activeCards: Set, activeCardsIndex: SetIndex) {
     let sortedIndex = activeCardsIndex.sort();
-    let foundSets = [...this.props.foundSets];
+    let history = [...this.props.history];
 
     let stringified = JSON.stringify(sortedIndex);
-    for (const setIndex of foundSets) {
+    for (const setIndex of history) {
       if (JSON.stringify(setIndex) == stringified)
         return this.showError(`This set has already been found.`);
     }
 
-    foundSets.push(sortedIndex);
+    history.push(sortedIndex);
 
-    let isEnded = foundSets.length == this.state.numSolutions;
+    let isEnded = history.length == this.state.numSolutions;
     this.setState({ isEnded });
 
-    this.props.updateHistory(foundSets);
+    this.props.updateHistory(history);
   }
 
   buildTableEntries(): Array<Set> {
     let currentCards = this.props.currentCards;
-    return this.props.foundSets.map((indexes) => {
+    return this.props.history.map((indexes) => {
       return indexes.map((index) => currentCards[index]) as Set;
     });
   }
@@ -99,7 +99,7 @@ export default class PuzzleGame extends React.Component<
             length={this.state.numSolutions}
             title="Solutions"
           />
-          {!!this.props.foundSets.length && (
+          {!!this.props.history.length && (
             <p>
               <button
                 onClick={() => {

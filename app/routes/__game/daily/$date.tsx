@@ -2,41 +2,41 @@ import PuzzleGame from "~/components/puzzleGame";
 import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import type { DailyPuzzle } from "@prisma/client";
+import type { PuzzleGame as PuzzleGameData } from "@prisma/client";
 import { useLoaderData, useFetcher } from "@remix-run/react";
-import { SetIndex } from "~/utils/types";
+import { SetIndex, unstringifySetIndex } from "~/utils/types";
 
 import { db } from "~/utils/db.server";
 import { getUserId } from "~/utils/auth.server";
 import { getSession } from "~/sessions";
 
 type LoaderData = {
-  puzzle: DailyPuzzle;
-  foundSets: Array<string>;
+  puzzle: PuzzleGameData;
+  setIndexes: Array<SetIndex>;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   if (!params.date) return redirect(`/daily`);
 
-  let puzzle = await db.dailyPuzzle.findUnique({
+  let puzzle = await db.puzzleGame.findUnique({
     where: { date: params.date },
   });
 
   // If puzzle cannot be found for that date, redirect to index
   if (!puzzle) return redirect(`/daily`);
 
-  let userId = await getUserId(request);
-  let foundSets: Array<string> = [];
+  const userId = await getUserId(request);
+  let setIndexes: Array<SetIndex> = [];
 
   // Check if history is stored in cookies
   const session = await getSession(request.headers.get("Cookie"));
-  let sessionHistory = session.get("history") || {};
+  const sessionHistory = session.get("history") || {};
 
-  if (sessionHistory[params.date]) foundSets = sessionHistory[params.date];
+  if (sessionHistory[params.date]) setIndexes = sessionHistory[params.date];
 
   // Check if history is stored in db
   if (userId) {
-    let dbHistory = await db.dailyPuzzleHistory.findUnique({
+    let dbHistory = await db.puzzleGameHistory.findUnique({
       where: {
         userId_puzzleDate: {
           puzzleDate: params.date,
@@ -45,11 +45,16 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       },
     });
 
-    if (dbHistory)
-      foundSets = [...new Set(foundSets.concat(dbHistory.foundSets))];
+    if (dbHistory) {
+      const dbSetIndexes = dbHistory.stringifiedSetIndexes.map(
+        (stringifiedSet) => unstringifySetIndex(stringifiedSet)
+      );
+
+      setIndexes = [...new Set(setIndexes.concat(dbSetIndexes))];
+    }
   }
 
-  return json({ puzzle, foundSets });
+  return json({ puzzle, setIndexes });
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -62,11 +67,12 @@ export default function DailyPuzzlesRoute() {
   const data = useLoaderData<LoaderData>();
   const fetcher = useFetcher();
 
-  const updateHistory = async (foundSets: SetIndex[]) => {
-    let stringifiedSets = JSON.stringify(foundSets);
-
+  const updateHistory = async (setIndexes: SetIndex[]) => {
     fetcher.submit(
-      { date: data.puzzle.date, foundSets: stringifiedSets },
+      {
+        date: data.puzzle.date,
+        stringifiedSetIndexes: JSON.stringify(setIndexes),
+      },
       { method: "post", action: "/daily/update-history" }
     );
   };
@@ -78,23 +84,23 @@ export default function DailyPuzzlesRoute() {
     );
   };
 
-  let foundSets: Array<SetIndex> = [];
+  let setIndexes: Array<SetIndex> = [];
 
   if (fetcher.submission) {
-    foundSets =
-      JSON.parse(fetcher.submission.formData.get("foundSets") as string) || [];
+    setIndexes =
+      (JSON.parse(
+        fetcher.submission.formData.get("stringifiedSetIndexes") as string
+      ) as Array<SetIndex>) || [];
   } else {
-    let stringifedSets = data?.foundSets || fetcher.data?.foundSets;
-    if (stringifedSets)
-      foundSets = stringifedSets.map((index) => JSON.parse(index) as SetIndex);
+    setIndexes = data?.setIndexes || fetcher.data?.setIndexes;
   }
 
   return (
     <PuzzleGame
-      currentCards={JSON.parse(data.puzzle.cards)}
+      currentCards={data.puzzle.cards}
       updateHistory={updateHistory}
       deleteHistory={deleteHistory}
-      foundSets={foundSets}
+      history={setIndexes}
     />
   );
 }

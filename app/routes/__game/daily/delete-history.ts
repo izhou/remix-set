@@ -1,7 +1,6 @@
 import { ActionFunction, json } from "@remix-run/node";
 import { db } from "~/utils/db.server";
 import { getUserId } from "~/utils/auth.server";
-import { SetIndex } from "~/utils/types";
 import { getSession, commitSession } from "~/sessions";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -24,17 +23,15 @@ export const action: ActionFunction = async ({ request }) => {
   const userId = await getUserId(request);
 
   if (userId) {
-    await db.dailyPuzzleHistory.delete({
+    let history = await db.puzzleGameHistory.findUnique({
       where: { userId_puzzleDate: { puzzleDate, userId } },
     });
+
+    if (history)
+      await db.puzzleGameHistory.delete({
+        where: { userId_puzzleDate: { puzzleDate, userId } },
+      });
   }
 
-  return json(
-    {},
-    {
-      headers: {
-        "Set-Cookie": await commitSession(session),
-      },
-    }
-  );
+  return json({}, { headers: { "Set-Cookie": await commitSession(session) } });
 };

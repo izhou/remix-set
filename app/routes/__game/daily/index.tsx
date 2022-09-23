@@ -11,7 +11,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const loader: LoaderFunction = async () => {
   // By default, show the most recent puzzle
-  let puzzle = await db.dailyPuzzle.findFirst({
+  let puzzle = await db.puzzleGame.findFirst({
     orderBy: { date: "desc" },
   });
 

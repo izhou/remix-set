@@ -8,15 +8,16 @@ export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
 
   let puzzleDate = form.get("date");
-  let jsonSets = form.get("foundSets");
+  let stringifiedSetIndexes = form.get("stringifiedSetIndexes");
 
-  if (typeof puzzleDate !== "string" || typeof jsonSets !== "string") {
+  if (
+    typeof puzzleDate !== "string" ||
+    typeof stringifiedSetIndexes !== "string"
+  ) {
     return json(form, { status: 400 });
   }
 
-  let foundSets: Array<SetIndex> = JSON.parse(jsonSets);
-  let stringifiedSets = foundSets.map((index) => JSON.stringify(index));
-
+  let setIndexes: Array<SetIndex> = JSON.parse(stringifiedSetIndexes);
   const userId = await getUserId(request);
 
   // Check for saved history in the session.
@@ -24,38 +25,94 @@ export const action: ActionFunction = async ({ request }) => {
   let sessionHistory = session.get("history") || {};
 
   if (sessionHistory[puzzleDate]) {
-    stringifiedSets = [
-      ...new Set(stringifiedSets.concat(sessionHistory[puzzleDate])),
+    setIndexes = [
+      ...new Set(
+        setIndexes.concat(sessionHistory[puzzleDate] as Array<SetIndex>)
+      ),
     ];
   }
 
   if (!userId) {
     // If not logged in, store history in the session
-    sessionHistory[puzzleDate] = stringifiedSets;
+    sessionHistory[puzzleDate] = setIndexes;
   } else {
     // If logged in, clear the session and store history in the db instead.
     delete sessionHistory[puzzleDate];
-    const puzzleHistory = await db.dailyPuzzleHistory.upsert({
+    let stringifiedSetIndexes = setIndexes.map((setIndex) =>
+      JSON.stringify(setIndex)
+    );
+
+    await db.puzzleGameHistory.upsert({
       where: { userId_puzzleDate: { puzzleDate, userId } },
-      update: { foundSets: stringifiedSets },
+      update: { stringifiedSetIndexes },
       create: {
         userId,
         puzzleDate,
-        foundSets: stringifiedSets,
+        stringifiedSetIndexes,
       },
     });
-
-    stringifiedSets = puzzleHistory.foundSets;
   }
 
   session.set("history", sessionHistory);
 
   return json(
-    { foundSets: stringifiedSets },
-    {
-      headers: {
-        "Set-Cookie": await commitSession(session),
-      },
-    }
+    { setIndexes },
+    { headers: { "Set-Cookie": await commitSession(session) } }
   );
 };
+
+// export const action: ActionFunction = async ({ request }) => {
+//   const form = await request.formData();
+
+//   let puzzleDate = form.get("date");
+//   let jsonSets = form.get("foundSets");
+
+//   if (typeof puzzleDate !== "string" || typeof jsonSets !== "string") {
+//     return json(form, { status: 400 });
+//   }
+
+//   let foundSets: Array<SetIndex> = JSON.parse(jsonSets);
+//   let stringifiedSets = foundSets.map((index) => JSON.stringify(index));
+
+//   const userId = await getUserId(request);
+
+//   // Check for saved history in thesession.
+//   const session = await getSession(request.headers.get("Cookie"));
+//   let sessionHistory = session.get("history") || {};
+
+//   if (sessionHistory[puzzleDate]) {
+//     stringifiedSets = [
+//       ...new Set(stringifiedSets.concat(sessionHistory[puzzleDate])),
+//     ];
+//   }
+
+//   if (!userId) {
+//     // If not logged in, store history in the session
+//     sessionHistory[puzzleDate] = stringifiedSets;
+//   } else {
+//     // If logged in, clear the session and store history in the db instead.
+//     delete sessionHistory[puzzleDate];
+//     const puzzleHistory = await db.dailyPuzzleHistory.upsert({
+//       where: { userId_puzzleDate: { puzzleDate, userId } },
+//       update: { foundSets: stringifiedSets },
+//       create: {
+//         userId,
+//         puzzleDate,
+//         foundSets: stringifiedSets,
+//       },
+//     });
+
+//     stringifiedSets = puzzleHistory.foundSets;
+//   }
+
+//   session.set("history", sessionHistory);
+
+//   return json(
+//     { foundSets: stringifiedSets },
+//     {
+//       headers: {
+//         "Set-Cookie": await commitSession(session),
+//       },
+//     }
+//   );
+// };

@@ -3,12 +3,12 @@ import { choosePuzzleCards } from "~/utils/game";
 import { db } from "~/utils/db.server";
 
 const createDailyPuzzle = async () => {
-  let cards = JSON.stringify(choosePuzzleCards());
+  let cards = choosePuzzleCards();
   // Return in yyyy-mm-dd
   let date = new Date();
   let formattedDate = date.toISOString().slice(0, 10);
 
-  await db.dailyPuzzle.create({
+  await db.puzzleGame.create({
     data: {
       cards,
       date: formattedDate,
