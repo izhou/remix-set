@@ -9,11 +9,11 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-  let oldestPuzzle = await db.dailyPuzzle.findFirst({
+  let oldestPuzzle = await db.puzzleGame.findFirst({
     orderBy: { date: "asc" },
   });
 
-  let newestPuzzle = await db.dailyPuzzle.findFirst({
+  let newestPuzzle = await db.puzzleGame.findFirst({
     orderBy: { date: "desc" },
   });
 
